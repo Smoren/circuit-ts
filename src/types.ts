@@ -21,11 +21,8 @@ export interface OutputConnectorInterface extends ConnectorInterface {
 export interface ElementInterface {
   readonly inputs: Array<InputConnectorInterface>;
   readonly outputs: Array<OutputConnectorInterface>;
-  propagate(index?: number): Array<ConnectorInterface>;
-}
-
-export interface CompositeElementInterface extends ElementInterface {
   init(): Array<ConnectorInterface>;
+  propagate(index?: number): Array<ConnectorInterface>;
 }
 
 export interface SignalPropagatorInterface {

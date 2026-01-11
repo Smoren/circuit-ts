@@ -1,5 +1,4 @@
 import type {
-  CompositeElementInterface,
   ElementInterface,
   ResetElementPropagatorInterface,
   SignalPropagatorInterface,
@@ -15,7 +14,7 @@ export class CompositeElementFactory {
     this._resetElementPropagator = resetElementPropagator;
   }
 
-  public createNotOr(inputsCount: number): CompositeElementInterface {
+  public createNotOr(inputsCount: number): ElementInterface {
     const inputBus = new BusElement(inputsCount);
     const outputBus = new BusElement(1);
 
@@ -32,7 +31,7 @@ export class CompositeElementFactory {
     return new CompositeElement(inputBus, outputBus, this._signalPropagator, this._resetElementPropagator);
   }
 
-  public createNotAnd(inputsCount: number): CompositeElementInterface {
+  public createNotAnd(inputsCount: number): ElementInterface {
     const inputBus = new BusElement(inputsCount);
     const outputBus = new BusElement(1);
 
@@ -49,7 +48,7 @@ export class CompositeElementFactory {
     return new CompositeElement(inputBus, outputBus, this._signalPropagator, this._resetElementPropagator);
   }
 
-  public createRsTriggerNotOrBased(): CompositeElementInterface {
+  public createRsTriggerNotOrBased(): ElementInterface {
     const inputBus = new BusElement(2);
     const outputBus = new BusElement(2);
 

@@ -1,5 +1,4 @@
 import {
-  CompositeElementInterface,
   ConnectorInterface,
   ElementInterface,
   InputConnectorInterface,
@@ -16,6 +15,10 @@ export abstract class BaseElement implements ElementInterface {
   protected constructor(inputsCount: number, outputsCount: number) {
     this.inputs = InputConnector.createCollection(this, inputsCount);
     this.outputs = OutputConnector.createCollection(this, outputsCount);
+  }
+
+  public init(): Array<ConnectorInterface> {
+    return [];
   }
 
   public propagate(index?: number): Array<ConnectorInterface> {
@@ -78,7 +81,7 @@ export class NotElement extends BaseElement {
   }
 }
 
-export class CompositeElement implements CompositeElementInterface {
+export class CompositeElement implements ElementInterface {
   readonly inputs: Array<InputConnectorInterface>;
   readonly outputs: Array<OutputConnectorInterface>;
   private readonly _signalPropagator: SignalPropagatorInterface;
