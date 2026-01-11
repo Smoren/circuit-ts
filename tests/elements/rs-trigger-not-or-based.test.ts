@@ -1,6 +1,6 @@
 import { describe, expect, it } from '@jest/globals'
 import { CompositeElementFactory } from "../../src/factories";
-import { SignalPropagator } from "../../src/propagators";
+import { ResetElementPropagator, SignalPropagator } from "../../src/propagators";
 
 describe.each([
   ...dataProviderForRsTriggerNotOrBasedDynamicTest(),
@@ -9,7 +9,8 @@ describe.each([
   (operations: [number, boolean, boolean, boolean][]) => {
     it('', () => {
       const signalPropagator = new SignalPropagator();
-      const factory = new CompositeElementFactory(signalPropagator);
+      const resetPropagator = new ResetElementPropagator();
+      const factory = new CompositeElementFactory(signalPropagator, resetPropagator);
 
       const rsTrigger = factory.createRsTriggerNotOrBased();
 

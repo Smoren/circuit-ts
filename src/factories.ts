@@ -1,11 +1,18 @@
-import type { CompositeElementInterface, ElementInterface, SignalPropagatorInterface } from "./types";
+import type {
+  CompositeElementInterface,
+  ElementInterface,
+  ResetElementPropagatorInterface,
+  SignalPropagatorInterface,
+} from "./types";
 import { AndElement, BusElement, CompositeElement, NotElement, OrElement } from "./elements";
 
 export class CompositeElementFactory {
   private readonly _signalPropagator: SignalPropagatorInterface;
+  private readonly _resetElementPropagator: ResetElementPropagatorInterface;
 
-  constructor(signalPropagator: SignalPropagatorInterface) {
+  constructor(signalPropagator: SignalPropagatorInterface, resetElementPropagator: ResetElementPropagatorInterface) {
     this._signalPropagator = signalPropagator;
+    this._resetElementPropagator = resetElementPropagator;
   }
 
   public createNotOr(inputsCount: number): CompositeElementInterface {
@@ -22,7 +29,7 @@ export class CompositeElementFactory {
     orElement.outputs[0].connect(notElement.inputs[0]);
     notElement.outputs[0].connect(outputBus.inputs[0]);
 
-    return new CompositeElement(inputBus, outputBus, this._signalPropagator);
+    return new CompositeElement(inputBus, outputBus, this._signalPropagator, this._resetElementPropagator);
   }
 
   public createNotAnd(inputsCount: number): CompositeElementInterface {
@@ -39,7 +46,7 @@ export class CompositeElementFactory {
     andElement.outputs[0].connect(notElement.inputs[0]);
     notElement.outputs[0].connect(outputBus.inputs[0]);
 
-    return new CompositeElement(inputBus, outputBus, this._signalPropagator);
+    return new CompositeElement(inputBus, outputBus, this._signalPropagator, this._resetElementPropagator);
   }
 
   public createRsTriggerNotOrBased(): CompositeElementInterface {
@@ -58,6 +65,6 @@ export class CompositeElementFactory {
     notOr1.outputs[0].connect(outputBus.inputs[0]);
     notOr2.outputs[0].connect(outputBus.inputs[1]);
 
-    return new CompositeElement(inputBus, outputBus, this._signalPropagator);
+    return new CompositeElement(inputBus, outputBus, this._signalPropagator, this._resetElementPropagator);
   }
 }

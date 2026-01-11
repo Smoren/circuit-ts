@@ -1,6 +1,10 @@
 import {
   CompositeElementInterface,
-  ConnectorInterface, ElementInterface, InputConnectorInterface, OutputConnectorInterface,
+  ConnectorInterface,
+  ElementInterface,
+  InputConnectorInterface,
+  OutputConnectorInterface,
+  ResetElementPropagatorInterface,
   SignalPropagatorInterface,
 } from "./types";
 import { InputConnector, OutputConnector } from "./connectors";
@@ -78,26 +82,33 @@ export class CompositeElement implements CompositeElementInterface {
   readonly inputs: Array<InputConnectorInterface>;
   readonly outputs: Array<OutputConnectorInterface>;
   private readonly _signalPropagator: SignalPropagatorInterface;
+  private readonly _resetPropagator: ResetElementPropagatorInterface;
   private _isInited: boolean = false;
 
   constructor(
     inputBus: BusElement,
     outputBus: BusElement,
     signalPropagator: SignalPropagatorInterface,
+    resetPropagator: ResetElementPropagatorInterface,
   ) {
     this.inputs = inputBus.inputs;
     this.outputs = outputBus.outputs;
     this._signalPropagator = signalPropagator;
+    this._resetPropagator = resetPropagator;
   }
 
   public init(): Array<ConnectorInterface> {
+    this._resetPropagator.propagate(this);
+    this._isInited = true;
     return this.propagate();
   }
 
   public propagate(index?: number): Array<ConnectorInterface> {
-    const inputs = (index === undefined || !this._isInited) ? this.inputs : [this.inputs[index]];
-    this._isInited = true;
+    if (!this._isInited) {
+      return this.init();
+    }
 
+    const inputs = index === undefined ? this.inputs : [this.inputs[index]];
     this._signalPropagator.propagate(inputs);
     return this.outputs.filter((output) => output.dirty);
   }
