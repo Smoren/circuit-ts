@@ -17,10 +17,6 @@ export abstract class BaseElement implements ElementInterface {
   public propagate(index?: number): Array<ConnectorInterface> {
     return this.outputs.filter((output) => output.dirty);
   }
-
-  public get elements(): Set<ElementInterface> {
-    return new Set();
-  }
 }
 
 export class OrElement extends BaseElement {
@@ -81,23 +77,16 @@ export class NotElement extends BaseElement {
 export class CompositeElement implements CompositeElementInterface {
   readonly inputs: Array<InputConnectorInterface>;
   readonly outputs: Array<OutputConnectorInterface>;
-  private readonly _elements: Set<ElementInterface>;
   private readonly _signalPropagator: SignalPropagatorInterface;
   private _isInited: boolean = false;
 
   constructor(
     inputBus: BusElement,
     outputBus: BusElement,
-    elements: Set<ElementInterface>,
     signalPropagator: SignalPropagatorInterface,
   ) {
     this.inputs = inputBus.inputs;
     this.outputs = outputBus.outputs;
-
-    elements.add(inputBus);
-    elements.add(outputBus)
-    this._elements = elements;
-
     this._signalPropagator = signalPropagator;
   }
 
@@ -111,9 +100,5 @@ export class CompositeElement implements CompositeElementInterface {
 
     this._signalPropagator.propagate(inputs);
     return this.outputs.filter((output) => output.dirty);
-  }
-
-  public get elements(): Set<ElementInterface> {
-    return this._elements;
   }
 }

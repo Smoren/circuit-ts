@@ -24,7 +24,7 @@ export class CompositeElementFactory {
 
     const elements = new Set([orElement, notElement]);
 
-    return new CompositeElement(inputBus, outputBus, elements, this._signalPropagator);
+    return new CompositeElement(inputBus, outputBus, this._signalPropagator);
   }
 
   public createNotAnd(inputsCount: number): CompositeElementInterface {
@@ -43,7 +43,7 @@ export class CompositeElementFactory {
 
     const elements = new Set([andElement, notElement]);
 
-    return new CompositeElement(inputBus, outputBus, elements, this._signalPropagator);
+    return new CompositeElement(inputBus, outputBus, this._signalPropagator);
   }
 
   public createRsTriggerNotOrBased(): CompositeElementInterface {
@@ -64,6 +64,6 @@ export class CompositeElementFactory {
 
     const elements = new Set([notOr1, notOr2]);
 
-    return new CompositeElement(inputBus, outputBus, elements, this._signalPropagator);
+    return new CompositeElement(inputBus, outputBus, this._signalPropagator);
   }
 }
