@@ -95,6 +95,7 @@ export class CompositeElement implements CompositeElementInterface {
     this.outputs = outputBus.outputs;
     this._signalPropagator = signalPropagator;
     this._resetPropagator = resetPropagator;
+    // this.init();
   }
 
   public init(): Array<ConnectorInterface> {
