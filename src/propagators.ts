@@ -1,4 +1,4 @@
-import { ConnectorInterface, DirtyPropagatorInterface, ElementInterface, SignalPropagatorInterface } from "./types";
+import { ConnectorInterface, ResetElementPropagatorInterface, ElementInterface, SignalPropagatorInterface } from "./types";
 import { InfiniteLoopError } from "./excpetions";
 
 export class SignalPropagator implements SignalPropagatorInterface {
@@ -49,7 +49,7 @@ export class SignalPropagator implements SignalPropagatorInterface {
   }
 }
 
-export class ResetElementPropagator implements DirtyPropagatorInterface {
+export class ResetElementPropagator implements ResetElementPropagatorInterface {
   private readonly _visitedDirtyConnectors: Set<ConnectorInterface>;
 
   constructor() {

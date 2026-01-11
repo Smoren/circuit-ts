@@ -32,6 +32,6 @@ export interface SignalPropagatorInterface {
   propagate(targets: ConnectorInterface[]): Set<ConnectorInterface>;
 }
 
-export interface DirtyPropagatorInterface {
+export interface ResetElementPropagatorInterface {
   propagate(element: ElementInterface): void;
 }
