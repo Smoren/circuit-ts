@@ -1,4 +1,4 @@
-import type { ConnectorInterface, SignalPropagatorInterface } from "./types";
+import type { ConnectorInterface, ElementInterface, SignalPropagatorInterface } from "./types";
 import { InfiniteLoopError } from "./excpetions";
 
 export class SignalPropagator implements SignalPropagatorInterface {
@@ -18,7 +18,7 @@ export class SignalPropagator implements SignalPropagatorInterface {
 
     while (targets.length > 0) {
       if (targets.length == 1) {
-        targets = targets.flatMap((target) => this.handleTarget(target));
+        targets = targets.flatMap((target) => this._handleTarget(target));
         continue;
       }
 
@@ -28,14 +28,14 @@ export class SignalPropagator implements SignalPropagatorInterface {
       const middle = Math.round(targets.length/2);
       const [actualTargets, deferredTargets] = [targets.slice(0, middle), targets.slice(middle)];
 
-      targets = actualTargets.flatMap((target) => this.handleTarget(target));
+      targets = actualTargets.flatMap((target) => this._handleTarget(target));
       targets.push(...deferredTargets);
     }
 
     return this._visitedDirtyConnectors;
   }
 
-  private handleTarget(target: ConnectorInterface): Array<ConnectorInterface> {
+  private _handleTarget(target: ConnectorInterface): Array<ConnectorInterface> {
     if (target.dirty) {
       const visitedCounter = this._visitedCounters.get(target) ?? 0;
       if (visitedCounter > this._visitCounterLimit) {
@@ -50,6 +50,30 @@ export class SignalPropagator implements SignalPropagatorInterface {
 }
 
 // TODO set all dirty
-// class ResetPropagator implements SignalPropagatorInterface {
-//
-// }
+class ResetElementPropagator {
+  private readonly _visitedDirtyConnectors: Set<ConnectorInterface>;
+
+  constructor() {
+    this._visitedDirtyConnectors = new Set<ConnectorInterface>();
+  }
+
+  public propagate(element: ElementInterface): void {
+    this._visitedDirtyConnectors.clear();
+
+    let targets: ConnectorInterface[] = element.inputs;
+
+    while (targets.length > 0) {
+      targets = targets.flatMap((target) => this._handleTarget(target, element));
+    }
+  }
+
+  private _handleTarget(target: ConnectorInterface, element: ElementInterface): Array<ConnectorInterface> {
+    if (this._visitedDirtyConnectors.has(target)) {
+      return [];
+    }
+    this._visitedDirtyConnectors.add(target);
+
+    // TODO set dirty and check got element output
+    return target.propagate();
+  }
+}
