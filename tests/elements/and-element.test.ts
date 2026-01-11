@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals'
-import { AndElement, OrElement } from "../../src/elements";
+import { AndElement } from "../../src/elements";
 
 describe.each([
   ...dataProviderForAndElementStaticTest(),
@@ -50,10 +50,12 @@ function dataProviderForAndElementStaticTest(): Array<[boolean[], boolean]> {
   return [
     [[false], false],
     [[true], true],
+
     [[false, false], false],
     [[true, false], false],
     [[false, true], false],
     [[true, true], true],
+
     [[false, false, false], false],
     [[true, false, false], false],
     [[false, true, false], false],

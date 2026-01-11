@@ -1,12 +1,15 @@
-import type { ConnectorInterface, ElementInterface, InputConnectorInterface, OutputConnectorInterface } from "./types";
+import type {
+  ConnectorInterface, ElementInterface, InputConnectorInterface, OutputConnectorInterface,
+  SignalPropagatorInterface,
+} from "./types";
 import { InputConnector, OutputConnector } from "./connectors";
 
 export abstract class BaseElement implements ElementInterface {
   readonly inputs: Array<InputConnectorInterface>;
   readonly outputs: Array<OutputConnectorInterface>;
 
-  protected constructor(inputsCount: number, outputsCount: number) {
-    this.inputs = InputConnector.createCollection(this, inputsCount);
+  protected constructor(inputsCount: number, outputsCount: number, dirty: boolean = false) {
+    this.inputs = InputConnector.createCollection(this, inputsCount, dirty);
     this.outputs = OutputConnector.createCollection(outputsCount);
   }
 
@@ -27,8 +30,8 @@ export class OrElement extends BaseElement {
 }
 
 export class BusElement extends BaseElement {
-  constructor(inputsCount: number) {
-    super(inputsCount, inputsCount);
+  constructor(inputsCount: number, dirty: boolean = false) {
+    super(inputsCount, inputsCount, dirty);
   }
 
   propagate(index: number): Array<ConnectorInterface> {
@@ -56,5 +59,42 @@ export class NotElement extends BaseElement {
   propagate(index: number): Array<ConnectorInterface> {
     this.outputs[0].value = !this.inputs[0].value;
     return super.propagate(index);
+  }
+}
+
+export class CompositeElement implements ElementInterface {
+  readonly inputs: Array<InputConnectorInterface>;
+  readonly outputs: Array<OutputConnectorInterface>;
+  private readonly _signalPropagator: SignalPropagatorInterface;
+
+  constructor(
+    inputBus: BusElement,
+    outputBus: BusElement,
+    signalPropagator: SignalPropagatorInterface,
+  ) {
+    this.inputs = inputBus.inputs;
+    this.outputs = outputBus.outputs;
+    this._signalPropagator = signalPropagator;
+
+    for (const input of this.inputs) {
+      this._signalPropagator.propagate(input);
+    }
+  }
+
+  public propagate(index: number): Array<ConnectorInterface> {
+    const input = this.inputs[index];
+
+    const dirtyConnectors: Set<ConnectorInterface> = this._signalPropagator.propagate(input);
+    const outputConnectors: Set<ConnectorInterface> = new Set(this.outputs);
+
+    const result = []
+
+    for (const connector of dirtyConnectors) {
+      if (outputConnectors.has(connector)) {
+        result.push(connector);
+      }
+    }
+
+    return result;
   }
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals'
-import { AndElement, NotElement, OrElement } from "../../src/elements";
+import { NotElement } from "../../src/elements";
 
 describe.each([
   ...dataProviderForNotElementDynamicTest(),

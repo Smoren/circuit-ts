@@ -1,17 +1,20 @@
-import type { ConnectorInterface, SignalPropagationInterface } from "./types";
+import type { ConnectorInterface, SignalPropagatorInterface } from "./types";
 import { InfiniteLoopError } from "./excpetions";
 
-export class SignalPropagation implements SignalPropagationInterface {
+export class SignalPropagator implements SignalPropagatorInterface {
   private readonly visitedDirtyConnectors: Set<ConnectorInterface>;
 
   constructor() {
     this.visitedDirtyConnectors = new Set<ConnectorInterface>();
   }
 
-  public send(target: ConnectorInterface, value: boolean): Set<ConnectorInterface> {
+  public propagate(target: ConnectorInterface): Set<ConnectorInterface> {
     this.visitedDirtyConnectors.clear();
 
-    target.value = value;
+    if (!target.dirty) {
+      return this.visitedDirtyConnectors;
+    }
+
     let targets = this.handleTarget(target);
 
     while (targets.length > 0) {

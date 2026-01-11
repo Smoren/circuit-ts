@@ -6,15 +6,15 @@ export class InputConnector implements InputConnectorInterface {
   private readonly _element: ElementInterface;
   private readonly _index: number;
 
-  constructor(element: ElementInterface, index: number, value: boolean = false) {
-    this._value = value;
-    this._dirty = false;
+  constructor(element: ElementInterface, index: number, dirty: boolean = false) {
+    this._value = false;
+    this._dirty = dirty;
     this._element = element;
     this._index = index;
   }
 
-  public static createCollection(element: ElementInterface, size: number): Array<InputConnectorInterface> {
-    return Array.from({ length: size }, (_, i) => new InputConnector(element, i));
+  public static createCollection(element: ElementInterface, size: number, dirty: boolean = false): Array<InputConnectorInterface> {
+    return Array.from({ length: size }, (_, i) => new InputConnector(element, i, dirty));
   }
 
   set value(value: boolean) {

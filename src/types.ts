@@ -20,6 +20,6 @@ export interface ElementInterface {
   propagate(index: number): Array<ConnectorInterface>;
 }
 
-export interface SignalPropagationInterface {
-  send(target: ConnectorInterface, value: boolean): Set<ConnectorInterface>;
+export interface SignalPropagatorInterface {
+  propagate(target: ConnectorInterface): Set<ConnectorInterface>;
 }
