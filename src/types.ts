@@ -20,6 +20,7 @@ export interface OutputConnectorInterface extends ConnectorInterface {
 export interface ElementInterface {
   readonly inputs: Array<InputConnectorInterface>;
   readonly outputs: Array<OutputConnectorInterface>;
+  readonly elements: Set<ElementInterface>;
   propagate(index?: number): Array<ConnectorInterface>;
 }
 

@@ -73,6 +73,10 @@ class ResetElementPropagator {
     }
     this._visitedDirtyConnectors.add(target);
 
+    if (target.element === element) {
+
+    }
+
     // TODO set dirty and check got element output
     return target.propagate();
   }
