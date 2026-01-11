@@ -1,15 +1,21 @@
-import type { ConnectorInterface, ElementInterface, InputConnectorInterface, OutputConnectorInterface } from "./types";
+import type {
+  ConnectorInterface,
+  ConnectorType,
+  ElementInterface,
+  InputConnectorInterface,
+  OutputConnectorInterface,
+} from "./types";
 
 let ID_COUNTER = 1;
 
-export class InputConnector implements InputConnectorInterface {
-  private _id: number;
-  private _value: boolean;
-  private _dirty: boolean;
-  private readonly _element: ElementInterface;
-  private readonly _index: number;
+export abstract class BaseConnector implements ConnectorInterface {
+  protected _id: number;
+  protected _value: boolean;
+  protected _dirty: boolean;
+  protected readonly _element: ElementInterface;
+  protected readonly _index: number;
 
-  constructor(element: ElementInterface, index: number) {
+  protected constructor(element: ElementInterface, index: number) {
     this._id = ID_COUNTER++;
     this._value = false;
     this._dirty = true;
@@ -17,9 +23,9 @@ export class InputConnector implements InputConnectorInterface {
     this._index = index;
   }
 
-  public static createCollection(element: ElementInterface, size: number): Array<InputConnectorInterface> {
-    return Array.from({ length: size }, (_, i) => new InputConnector(element, i));
-  }
+  public abstract propagate(): Array<ConnectorInterface>;
+
+  abstract get type(): ConnectorType;
 
   set value(value: boolean) {
     this._dirty ||= this._value !== value;
@@ -41,6 +47,18 @@ export class InputConnector implements InputConnectorInterface {
   get index(): number {
     return this._index;
   }
+}
+
+export class InputConnector extends BaseConnector implements InputConnectorInterface {
+  readonly type: ConnectorType = 'input';
+
+  constructor(element: ElementInterface, index: number) {
+    super(element, index);
+  }
+
+  public static createCollection(element: ElementInterface, size: number): Array<InputConnectorInterface> {
+    return Array.from({ length: size }, (_, i) => new InputConnector(element, i));
+  }
 
   public propagate(): Array<ConnectorInterface> {
     if (!this._dirty) {
@@ -51,34 +69,17 @@ export class InputConnector implements InputConnectorInterface {
   }
 }
 
-export class OutputConnector implements OutputConnectorInterface {
-  private _id: number;
-  private _value: boolean;
-  private _dirty: boolean;
+export class OutputConnector extends BaseConnector implements OutputConnectorInterface {
+  readonly type: ConnectorType = 'output';
   private readonly _targets: Set<InputConnectorInterface>;
 
-  constructor(targets?: Set<InputConnectorInterface>) {
-    this._id = ID_COUNTER++;
-    this._value = false;
-    this._dirty = true;
-    this._targets = targets ?? new Set();
+  constructor(element: ElementInterface, index: number) {
+    super(element, index);
+    this._targets = new Set();
   }
 
-  public static createCollection(size: number): Array<OutputConnectorInterface> {
-    return Array.from({ length: size }, () => new OutputConnector());
-  }
-
-  set value(value: boolean) {
-    this._dirty ||= this._value !== value;
-    this._value = value;
-  }
-
-  get value(): boolean {
-    return this._value;
-  }
-
-  get dirty(): boolean {
-    return this._dirty;
+  public static createCollection(element: ElementInterface, size: number): Array<OutputConnectorInterface> {
+    return Array.from({ length: size }, (_, i) => new OutputConnector(element, i));
   }
 
   get targets(): Array<InputConnectorInterface> {

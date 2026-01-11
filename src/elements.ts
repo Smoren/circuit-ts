@@ -11,7 +11,7 @@ export abstract class BaseElement implements ElementInterface {
 
   protected constructor(inputsCount: number, outputsCount: number) {
     this.inputs = InputConnector.createCollection(this, inputsCount);
-    this.outputs = OutputConnector.createCollection(outputsCount);
+    this.outputs = OutputConnector.createCollection(this, outputsCount);
   }
 
   public propagate(index?: number): Array<ConnectorInterface> {
