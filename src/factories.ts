@@ -22,8 +22,6 @@ export class CompositeElementFactory {
     orElement.outputs[0].connect(notElement.inputs[0]);
     notElement.outputs[0].connect(outputBus.inputs[0]);
 
-    const elements = new Set([orElement, notElement]);
-
     return new CompositeElement(inputBus, outputBus, this._signalPropagator);
   }
 
