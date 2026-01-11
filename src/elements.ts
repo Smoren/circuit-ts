@@ -1,4 +1,5 @@
-import type {
+import {
+  CompositeElementInterface,
   ConnectorInterface, ElementInterface, InputConnectorInterface, OutputConnectorInterface,
   SignalPropagatorInterface,
 } from "./types";
@@ -13,7 +14,7 @@ export abstract class BaseElement implements ElementInterface {
     this.outputs = OutputConnector.createCollection(outputsCount);
   }
 
-  propagate(index: number): Array<ConnectorInterface> {
+  public propagate(index: number): Array<ConnectorInterface> {
     return this.outputs.filter((output) => output.dirty);
   }
 }
@@ -23,7 +24,7 @@ export class OrElement extends BaseElement {
     super(inputsCount, 1);
   }
 
-  propagate(index: number): Array<ConnectorInterface> {
+  public propagate(index: number): Array<ConnectorInterface> {
     this.outputs[0].value = this.inputs.some((input) => input.value);
     return super.propagate(index);
   }
@@ -34,7 +35,7 @@ export class BusElement extends BaseElement {
     super(inputsCount, inputsCount);
   }
 
-  propagate(index: number): Array<ConnectorInterface> {
+  public propagate(index: number): Array<ConnectorInterface> {
     this.outputs[index].value = this.inputs[index].value;
     return super.propagate(index);
   }
@@ -45,7 +46,7 @@ export class AndElement extends BaseElement {
     super(inputsCount, 1);
   }
 
-  propagate(index: number): Array<ConnectorInterface> {
+  public propagate(index: number): Array<ConnectorInterface> {
     this.outputs[0].value = this.inputs.every((input) => input.value);
     return super.propagate(index);
   }
@@ -56,13 +57,13 @@ export class NotElement extends BaseElement {
     super(1, 1);
   }
 
-  propagate(index: number): Array<ConnectorInterface> {
+  public propagate(index: number): Array<ConnectorInterface> {
     this.outputs[0].value = !this.inputs[0].value;
     return super.propagate(index);
   }
 }
 
-export class CompositeElement implements ElementInterface {
+export class CompositeElement implements CompositeElementInterface {
   readonly inputs: Array<InputConnectorInterface>;
   readonly outputs: Array<OutputConnectorInterface>;
   private readonly _signalPropagator: SignalPropagatorInterface;
@@ -75,7 +76,9 @@ export class CompositeElement implements ElementInterface {
     this.inputs = inputBus.inputs;
     this.outputs = outputBus.outputs;
     this._signalPropagator = signalPropagator;
+  }
 
+  public init() {
     for (const input of this.inputs) {
       this._signalPropagator.propagate(input);
     }

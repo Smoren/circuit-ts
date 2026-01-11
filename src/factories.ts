@@ -1,4 +1,4 @@
-import type { ElementInterface, SignalPropagatorInterface } from "./types";
+import type { CompositeElementInterface, ElementInterface, SignalPropagatorInterface } from "./types";
 import { AndElement, BusElement, CompositeElement, NotElement, OrElement } from "./elements";
 
 export class CompositeElementFactory {
@@ -8,7 +8,7 @@ export class CompositeElementFactory {
     this._signalPropagator = signalPropagator;
   }
 
-  public createNotOr(inputsCount: number): ElementInterface {
+  public createNotOr(inputsCount: number): CompositeElementInterface {
     const inputBus = new BusElement(inputsCount);
     const outputBus = new BusElement(1);
 
@@ -25,7 +25,7 @@ export class CompositeElementFactory {
     return new CompositeElement(inputBus, outputBus, this._signalPropagator);
   }
 
-  public createNotAnd(inputsCount: number): ElementInterface {
+  public createNotAnd(inputsCount: number): CompositeElementInterface {
     const inputBus = new BusElement(inputsCount);
     const outputBus = new BusElement(1);
 
@@ -38,6 +38,25 @@ export class CompositeElementFactory {
 
     andElement.outputs[0].connect(notElement.inputs[0]);
     notElement.outputs[0].connect(outputBus.inputs[0]);
+
+    return new CompositeElement(inputBus, outputBus, this._signalPropagator);
+  }
+
+  public createRsTriggerNotOrBased(): CompositeElementInterface {
+    const inputBus = new BusElement(2);
+    const outputBus = new BusElement(2);
+
+    const notOr1 = this.createNotOr(2);
+    const notOr2 = this.createNotOr(2);
+
+    inputBus.outputs[0].connect(notOr1.inputs[0]);
+    inputBus.outputs[1].connect(notOr2.inputs[0]);
+
+    notOr1.outputs[0].connect(notOr2.inputs[1]);
+    notOr2.outputs[0].connect(notOr1.inputs[1]);
+
+    notOr2.outputs[0].connect(outputBus.inputs[0]);
+    notOr1.outputs[0].connect(outputBus.inputs[1]);
 
     return new CompositeElement(inputBus, outputBus, this._signalPropagator);
   }

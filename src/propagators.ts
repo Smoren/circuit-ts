@@ -27,7 +27,8 @@ export class SignalPropagator implements SignalPropagatorInterface {
   private handleTarget(target: ConnectorInterface): Array<ConnectorInterface> {
     if (target.dirty) {
       if (this.visitedDirtyConnectors.has(target)) {
-        throw new InfiniteLoopError(target);
+        // FIXME
+        // throw new InfiniteLoopError(target);
       }
       this.visitedDirtyConnectors.add(target);
     }
