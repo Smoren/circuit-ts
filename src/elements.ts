@@ -17,9 +17,7 @@ export abstract class BaseElement implements ElementInterface {
     this.outputs = OutputConnector.createCollection(this, outputsCount);
   }
 
-  public init(): Array<ConnectorInterface> {
-    return [];
-  }
+  public init(): void {}
 
   public propagate(index?: number): Array<ConnectorInterface> {
     return this.outputs.filter((output) => output.dirty);
@@ -101,19 +99,24 @@ export class CompositeElement implements ElementInterface {
     // this.init();
   }
 
-  public init(): Array<ConnectorInterface> {
+  public init(): void {
     this._resetPropagator.propagate(this);
     this._isInited = true;
-    return this.propagate();
+    this.propagate();
   }
 
   public propagate(index?: number): Array<ConnectorInterface> {
     if (!this._isInited) {
-      return this.init();
+      this.init();
+      return this._getDirtyOutputs();
     }
 
     const inputs = index === undefined ? this.inputs : [this.inputs[index]];
     this._signalPropagator.propagate(inputs);
+    return this._getDirtyOutputs();
+  }
+
+  private _getDirtyOutputs(): Array<ConnectorInterface> {
     return this.outputs.filter((output) => output.dirty);
   }
 }

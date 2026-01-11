@@ -21,7 +21,7 @@ export interface OutputConnectorInterface extends ConnectorInterface {
 export interface ElementInterface {
   readonly inputs: Array<InputConnectorInterface>;
   readonly outputs: Array<OutputConnectorInterface>;
-  init(): Array<ConnectorInterface>;
+  init(): void;
   propagate(index?: number): Array<ConnectorInterface>;
 }
 
