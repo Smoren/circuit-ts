@@ -1,8 +1,7 @@
-node_modules
-package-lock.json
-dist/*
-
-.env.local
-
 .idea
-venv
+node_modules
+dist
+package-lock.json
+coverage
+es
+lib

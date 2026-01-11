@@ -6,19 +6,19 @@ export class InputConnector implements InputConnectorInterface {
   private readonly _element: ElementInterface;
   private readonly _index: number;
 
-  constructor(element: ElementInterface, index: number, dirty: boolean = false) {
+  constructor(element: ElementInterface, index: number) {
     this._value = false;
-    this._dirty = dirty;
+    this._dirty = true;
     this._element = element;
     this._index = index;
   }
 
-  public static createCollection(element: ElementInterface, size: number, dirty: boolean = false): Array<InputConnectorInterface> {
-    return Array.from({ length: size }, (_, i) => new InputConnector(element, i, dirty));
+  public static createCollection(element: ElementInterface, size: number): Array<InputConnectorInterface> {
+    return Array.from({ length: size }, (_, i) => new InputConnector(element, i));
   }
 
   set value(value: boolean) {
-    this._dirty = this._value !== value;
+    this._dirty ||= this._value !== value;
     this._value = value;
   }
 
@@ -52,9 +52,9 @@ export class OutputConnector implements OutputConnectorInterface {
   private _dirty: boolean;
   private readonly _targets: Set<InputConnectorInterface>;
 
-  constructor(targets?: Set<InputConnectorInterface>, value: boolean = false) {
-    this._value = value;
-    this._dirty = false;
+  constructor(targets?: Set<InputConnectorInterface>) {
+    this._value = false;
+    this._dirty = true;
     this._targets = targets ?? new Set();
   }
 
@@ -63,7 +63,7 @@ export class OutputConnector implements OutputConnectorInterface {
   }
 
   set value(value: boolean) {
-    this._dirty = this._value !== value;
+    this._dirty ||= this._value !== value;
     this._value = value;
   }
 

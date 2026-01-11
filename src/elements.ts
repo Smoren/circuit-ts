@@ -8,8 +8,8 @@ export abstract class BaseElement implements ElementInterface {
   readonly inputs: Array<InputConnectorInterface>;
   readonly outputs: Array<OutputConnectorInterface>;
 
-  protected constructor(inputsCount: number, outputsCount: number, dirty: boolean = false) {
-    this.inputs = InputConnector.createCollection(this, inputsCount, dirty);
+  protected constructor(inputsCount: number, outputsCount: number) {
+    this.inputs = InputConnector.createCollection(this, inputsCount);
     this.outputs = OutputConnector.createCollection(outputsCount);
   }
 

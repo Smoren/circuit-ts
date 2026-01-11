@@ -1,5 +1,4 @@
 import { describe, expect, it } from '@jest/globals'
-import { AndElement } from "../../src/elements";
 import { CompositeElementFactory } from "../../src/factories";
 import { SignalPropagator } from "../../src/propagators";
 
@@ -15,7 +14,7 @@ describe.each([
       const notAndElement = factory.createNotAnd(inputValues.length);
       const notAndElementOutput = notAndElement.outputs[0];
 
-      expect(notAndElementOutput.value).toEqual(false);
+      expect(notAndElementOutput.value).toEqual(true);
 
       for (let i=0; i<inputValues.length; ++i) {
         notAndElement.inputs[i].value = inputValues[i];
@@ -30,26 +29,29 @@ describe.each([
   },
 );
 
-// describe.each([
-//   ...dataProviderForNotAndElementDynamicTest(),
-// ] as Array<[number, [number, boolean, boolean][]]>)(
-//   'NotAndElement Dynamic Test',
-//   (inputsCount: number, operations: [number, boolean, boolean][]) => {
-//     it('', () => {
-//       const andElement = new AndElement(inputsCount);
-//       const andElementOutput = andElement.outputs[0];
-//
-//       expect(andElementOutput.value).toEqual(false);
-//
-//       for (const [inputIndex, inputValue, expectedOutputValue] of operations) {
-//         andElement.inputs[inputIndex].value = inputValue;
-//         andElement.propagate(inputIndex);
-//
-//         expect(andElementOutput.value).toEqual(expectedOutputValue);
-//       }
-//     });
-//   },
-// );
+describe.each([
+  ...dataProviderForNotAndElementDynamicTest(),
+] as Array<[number, [number, boolean, boolean][]]>)(
+  'NotAndElement Dynamic Test',
+  (inputsCount: number, operations: [number, boolean, boolean][]) => {
+    it('', () => {
+      const signalPropagator = new SignalPropagator();
+      const factory = new CompositeElementFactory(signalPropagator);
+
+      const notAndElement = factory.createNotAnd(inputsCount);
+      const notAndElementOutput = notAndElement.outputs[0];
+
+      expect(notAndElementOutput.value).toEqual(true);
+
+      for (const [inputIndex, inputValue, expectedOutputValue] of operations) {
+        notAndElement.inputs[inputIndex].value = inputValue;
+        notAndElement.propagate(inputIndex);
+
+        expect(notAndElementOutput.value).toEqual(expectedOutputValue);
+      }
+    });
+  },
+);
 
 function dataProviderForNotAndElementStaticTest(): Array<[boolean[], boolean]> {
   return [
@@ -76,19 +78,19 @@ function dataProviderForNotAndElementDynamicTest(): Array<[number, [number, bool
   return [
     [
       1,
-      [[0, true, true], [0, false, false]],
+      [[0, true, false], [0, false, true]],
     ],
     [
       1,
-      [[0, true, true], [0, true, true], [0, false, false], [0, false, false], [0, true, true], [0, false, false]],
+      [[0, true, false], [0, true, false], [0, false, true], [0, false, true], [0, true, false], [0, false, true]],
     ],
     [
       2,
-      [[0, true, false], [1, true, true], [0, false, false], [1, false, false]],
+      [[0, true, true], [1, true, false], [0, false, true], [1, false, true]],
     ],
     [
       2,
-      [[0, true, false], [0, false, false], [1, false, false], [1, true, false], [0, true, true], [0, false, false], [1, true, false], [1, false, false]],
+      [[0, true, true], [0, false, true], [1, false, true], [1, true, true], [0, true, false], [0, false, true], [1, true, true], [1, false, true]],
     ],
   ];
 }
