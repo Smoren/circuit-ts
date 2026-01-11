@@ -1,0 +1,18 @@
+{
+  "include": ["env.d.ts", "src/**/*"],
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "lib": ["es2017", "dom"],
+    "types": ["node"],
+    "ignoreDeprecations": "5.0"
+  },
+  "references": [
+    {
+      "path": "./tsconfig.config.json"
+    }
+  ]
+}

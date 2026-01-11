@@ -1,0 +1,35 @@
+{
+  "name": "circuit-ts",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "run-p type-check build-only",
+    "preview": "vite preview",
+    "build-only": "vite build",
+    "type-check": "vue-tsc --noEmit",
+    "test": "jest",
+    "tool": "tsx --no-warnings src/scripts/tool.ts"
+  },
+  "dependencies": {
+    "itertools-ts": "^2.5.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^18.19.33",
+    "jest": "latest",
+    "npm-run-all": "^4.1.5",
+    "sass": "^1.57.1",
+    "ts-jest": "^29.0.3",
+    "tsx": "^4.10.1",
+    "typescript": "~5.4.5",
+    "vite": "^4.0.0",
+    "vue-tsc": "^1.0.12"
+  },
+  "jest": {
+    "rootDir": ".",
+    "unmockedModulePathPatterns": [],
+    "preset": "ts-jest",
+    "testEnvironment": "node"
+  }
+}
