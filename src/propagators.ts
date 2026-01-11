@@ -8,6 +8,7 @@ export class SignalPropagator implements SignalPropagatorInterface {
     this.visitedDirtyConnectors = new Set<ConnectorInterface>();
   }
 
+  // TODO targets: ConnectorInterface[]
   public propagate(target: ConnectorInterface): Set<ConnectorInterface> {
     this.visitedDirtyConnectors.clear();
 
