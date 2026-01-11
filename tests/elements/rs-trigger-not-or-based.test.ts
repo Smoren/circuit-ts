@@ -12,29 +12,66 @@ describe.each([
       const factory = new CompositeElementFactory(signalPropagator);
 
       const rsTrigger = factory.createRsTriggerNotOrBased();
+
       rsTrigger.init();
 
-      const [resetInput, setInput] = rsTrigger.inputs;
       const [directOutput, inverseOutput] = rsTrigger.outputs;
+      expect(directOutput.value).not.toEqual(inverseOutput.value);
 
-      expect(directOutput.value).toEqual(false);
-      expect(inverseOutput.value).toEqual(true);
+      for (const [inputIndex, inputValue, expectedDirectOutputValue, expectedInverseOutputValue] of operations) {
+        rsTrigger.inputs[inputIndex].value = inputValue;
+        rsTrigger.propagate(inputIndex);
 
-      // for (const [inputIndex, inputValue, expectedOutputValue] of operations) {
-      //   notAndElement.inputs[inputIndex].value = inputValue;
-      //   notAndElement.propagate(inputIndex);
-      //
-      //   expect(notAndElementOutput.value).toEqual(expectedOutputValue);
-      // }
+        expect(directOutput.value).toEqual(expectedDirectOutputValue);
+        expect(inverseOutput.value).toEqual(expectedInverseOutputValue);
+      }
     });
   },
 );
 
-
 function dataProviderForRsTriggerNotOrBasedDynamicTest(): Array<[[number, boolean, boolean, boolean][]]> {
   return [
     [
-      [],
+      [
+        [0, true, false, true],     // R(1) => Q = 0
+        [0, false, false, true],    // R(0) => Q = 0 (const)
+        [1, true, true, false],     // S(1) => Q = 1
+        [1, false, true, false],    // S(1) => Q = 1 (const)
+        [0, true, false, true],     // R(1) => Q = 0
+        [0, false, false, true],    // R(0) => Q = 0 (const)
+        [0, true, false, true],     // R(1) => Q = 0
+        [0, false, false, true],    // R(0) => Q = 0 (const)
+      ],
+    ],
+    [
+      [
+        [1, true, true, false],      // S(1) => Q = 1
+        [1, false, true, false],     // S(1) => Q = 1 (const)
+        [0, true, false, true],      // R(1) => Q = 0
+        [0, false, false, true],     // R(0) => Q = 0 (const)
+        [1, true, true, false],      // S(1) => Q = 1
+        [1, false, true, false],     // S(1) => Q = 1 (const)
+        [1, true, true, false],      // S(1) => Q = 1
+        [1, false, true, false],     // S(1) => Q = 1 (const)
+      ],
+    ],
+    [
+      [
+        [0, true, false, true],     // R(1) => Q = 0
+        [1, true, false, false],    // S(1) => forbidden state (Q = !Q = 0)
+        [1, false, false, true],    // S(0) => Q = 0
+        [0, false, false, true],    // R(0) => Q = 0 (const)
+        [1, true, true, false],     // S(1) => Q = 1
+      ],
+    ],
+    [
+      [
+        [1, true, true, false],     // S(1) => Q = 1
+        [0, true, false, false],    // R(1) => forbidden state (Q = !Q = 0)
+        [0, false, true, false],    // R(0) => Q = 1
+        [1, false, true, false],    // S(0) => Q = 1 (const)
+        [0, true, false, true],     // R(1) => Q = 0
+      ],
     ],
   ];
 }

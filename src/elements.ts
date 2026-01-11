@@ -38,11 +38,11 @@ export class BusElement extends BaseElement {
   public propagate(index?: number): Array<ConnectorInterface> {
     if (index === undefined) {
       this._sendAll();
-    } else {
-      this.outputs[index].value = this.inputs[index].value;
+      return super.propagate(index);
     }
 
-    return super.propagate(index);
+    this.outputs[index].value = this.inputs[index].value;
+    return [this.outputs[index]];
   }
 
   private _sendAll() {

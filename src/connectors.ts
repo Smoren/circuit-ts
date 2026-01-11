@@ -1,12 +1,16 @@
 import type { ConnectorInterface, ElementInterface, InputConnectorInterface, OutputConnectorInterface } from "./types";
 
+let ID_COUNTER = 1;
+
 export class InputConnector implements InputConnectorInterface {
+  private _id: number;
   private _value: boolean;
   private _dirty: boolean;
   private readonly _element: ElementInterface;
   private readonly _index: number;
 
   constructor(element: ElementInterface, index: number) {
+    this._id = ID_COUNTER++;
     this._value = false;
     this._dirty = true;
     this._element = element;
@@ -48,11 +52,13 @@ export class InputConnector implements InputConnectorInterface {
 }
 
 export class OutputConnector implements OutputConnectorInterface {
+  private _id: number;
   private _value: boolean;
   private _dirty: boolean;
   private readonly _targets: Set<InputConnectorInterface>;
 
   constructor(targets?: Set<InputConnectorInterface>) {
+    this._id = ID_COUNTER++;
     this._value = false;
     this._dirty = true;
     this._targets = targets ?? new Set();
@@ -73,6 +79,10 @@ export class OutputConnector implements OutputConnectorInterface {
 
   get dirty(): boolean {
     return this._dirty;
+  }
+
+  get targets(): Array<InputConnectorInterface> {
+    return [...this._targets];
   }
 
   public propagate(): Array<ConnectorInterface> {

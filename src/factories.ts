@@ -55,8 +55,8 @@ export class CompositeElementFactory {
     notOr1.outputs[0].connect(notOr2.inputs[1]);
     notOr2.outputs[0].connect(notOr1.inputs[1]);
 
-    notOr2.outputs[0].connect(outputBus.inputs[0]);
-    notOr1.outputs[0].connect(outputBus.inputs[1]);
+    notOr1.outputs[0].connect(outputBus.inputs[0]);
+    notOr2.outputs[0].connect(outputBus.inputs[1]);
 
     return new CompositeElement(inputBus, outputBus, this._signalPropagator);
   }

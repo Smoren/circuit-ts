@@ -10,6 +10,7 @@ export interface InputConnectorInterface extends ConnectorInterface {
 }
 
 export interface OutputConnectorInterface extends ConnectorInterface {
+  readonly targets: Array<InputConnectorInterface>;
   connect(connector: InputConnectorInterface): void;
   disconnect(connector: InputConnectorInterface): void;
 }
