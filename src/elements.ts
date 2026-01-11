@@ -30,8 +30,8 @@ export class OrElement extends BaseElement {
 }
 
 export class BusElement extends BaseElement {
-  constructor(inputsCount: number, dirty: boolean = false) {
-    super(inputsCount, inputsCount, dirty);
+  constructor(inputsCount: number) {
+    super(inputsCount, inputsCount);
   }
 
   propagate(index: number): Array<ConnectorInterface> {

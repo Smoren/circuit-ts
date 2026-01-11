@@ -9,7 +9,7 @@ export class CompositeElementFactory {
   }
 
   public createNotOr(inputsCount: number): ElementInterface {
-    const inputBus = new BusElement(inputsCount, true);
+    const inputBus = new BusElement(inputsCount);
     const outputBus = new BusElement(1);
 
     const orElement = new OrElement(inputsCount);
@@ -26,7 +26,7 @@ export class CompositeElementFactory {
   }
 
   public createNotAnd(inputsCount: number): ElementInterface {
-    const inputBus = new BusElement(inputsCount, true);
+    const inputBus = new BusElement(inputsCount);
     const outputBus = new BusElement(1);
 
     const andElement = new AndElement(inputsCount);
