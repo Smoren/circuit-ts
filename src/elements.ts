@@ -106,6 +106,8 @@ export class CompositeElement implements ElementInterface {
   }
 
   public propagate(index?: number): Array<ConnectorInterface> {
+    // TODO возможно принимать пропагатор на вход, добавлять в него инпуты как дополнительные таргеты (их придется хранить в атрибуте пропагатора).
+    // а возможно и не нужно собирать вложенные выходы, потому что они будут скрыты подкат, а при открытии детализации автоматом обновлять все на экране.
     if (!this._isInited) {
       this.init();
       return this._getDirtyOutputs();
