@@ -14,6 +14,8 @@ describe.each([
       const notOrElement = factory.createNotOr(inputValues.length);
       const notOrElementOutput = notOrElement.outputs[0];
 
+      notOrElement.init();
+
       expect(notOrElementOutput.value).toEqual(true);
 
       for (let i=0; i<inputValues.length; ++i) {
@@ -40,6 +42,8 @@ describe.each([
 
       const notOrElement = factory.createNotOr(inputsCount);
       const notOrElementOutput = notOrElement.outputs[0];
+
+      notOrElement.init();
 
       expect(notOrElementOutput.value).toEqual(true);
 

@@ -14,7 +14,7 @@ export abstract class BaseElement implements ElementInterface {
     this.outputs = OutputConnector.createCollection(outputsCount);
   }
 
-  public propagate(index: number): Array<ConnectorInterface> {
+  public propagate(index?: number): Array<ConnectorInterface> {
     return this.outputs.filter((output) => output.dirty);
   }
 }
@@ -24,9 +24,9 @@ export class OrElement extends BaseElement {
     super(inputsCount, 1);
   }
 
-  public propagate(index: number): Array<ConnectorInterface> {
+  public propagate(index?: number): Array<ConnectorInterface> {
     this.outputs[0].value = this.inputs.some((input) => input.value);
-    return super.propagate(index);
+    return super.propagate();
   }
 }
 
@@ -35,9 +35,20 @@ export class BusElement extends BaseElement {
     super(inputsCount, inputsCount);
   }
 
-  public propagate(index: number): Array<ConnectorInterface> {
-    this.outputs[index].value = this.inputs[index].value;
+  public propagate(index?: number): Array<ConnectorInterface> {
+    if (index === undefined) {
+      this._sendAll();
+    } else {
+      this.outputs[index].value = this.inputs[index].value;
+    }
+
     return super.propagate(index);
+  }
+
+  private _sendAll() {
+    for (let i=0; i<this.inputs.length; ++i) {
+      this.outputs[i].value = this.inputs[i].value;
+    }
   }
 }
 
@@ -46,7 +57,7 @@ export class AndElement extends BaseElement {
     super(inputsCount, 1);
   }
 
-  public propagate(index: number): Array<ConnectorInterface> {
+  public propagate(index?: number): Array<ConnectorInterface> {
     this.outputs[0].value = this.inputs.every((input) => input.value);
     return super.propagate(index);
   }
@@ -57,7 +68,7 @@ export class NotElement extends BaseElement {
     super(1, 1);
   }
 
-  public propagate(index: number): Array<ConnectorInterface> {
+  public propagate(index?: number): Array<ConnectorInterface> {
     this.outputs[0].value = !this.inputs[0].value;
     return super.propagate(index);
   }
@@ -79,15 +90,13 @@ export class CompositeElement implements CompositeElementInterface {
   }
 
   public init() {
-    for (const input of this.inputs) {
-      this._signalPropagator.propagate(input);
-    }
+    this._signalPropagator.propagate(this.inputs);
   }
 
-  public propagate(index: number): Array<ConnectorInterface> {
-    const input = this.inputs[index];
+  public propagate(index?: number): Array<ConnectorInterface> {
+    const inputs = index === undefined ? this.inputs : [this.inputs[index]];
 
-    const dirtyConnectors: Set<ConnectorInterface> = this._signalPropagator.propagate(input);
+    const dirtyConnectors: Set<ConnectorInterface> = this._signalPropagator.propagate(inputs);
     const outputConnectors: Set<ConnectorInterface> = new Set(this.outputs);
 
     const result = []

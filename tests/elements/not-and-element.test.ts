@@ -14,15 +14,15 @@ describe.each([
       const notAndElement = factory.createNotAnd(inputValues.length);
       const notAndElementOutput = notAndElement.outputs[0];
 
+      notAndElement.init();
+
       expect(notAndElementOutput.value).toEqual(true);
 
       for (let i=0; i<inputValues.length; ++i) {
         notAndElement.inputs[i].value = inputValues[i];
       }
 
-      for (let i=0; i<inputValues.length; ++i) {
-        notAndElement.propagate(i);
-      }
+      notAndElement.propagate();
 
       expect(notAndElementOutput.value).toEqual(expectedOutputValue);
     });
@@ -40,6 +40,8 @@ describe.each([
 
       const notAndElement = factory.createNotAnd(inputsCount);
       const notAndElementOutput = notAndElement.outputs[0];
+
+      notAndElement.init();
 
       expect(notAndElementOutput.value).toEqual(true);
 

@@ -16,9 +16,7 @@ describe.each([
         andElement.inputs[i].value = inputValues[i];
       }
 
-      for (let i=0; i<inputValues.length; ++i) {
-        andElement.propagate(i);
-      }
+      andElement.propagate();
 
       expect(andElementOutput.value).toEqual(expectedOutputValue);
     });
