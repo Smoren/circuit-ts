@@ -41,8 +41,6 @@ export class CompositeElementFactory {
     andElement.outputs[0].connect(notElement.inputs[0]);
     notElement.outputs[0].connect(outputBus.inputs[0]);
 
-    const elements = new Set([andElement, notElement]);
-
     return new CompositeElement(inputBus, outputBus, this._signalPropagator);
   }
 
@@ -61,8 +59,6 @@ export class CompositeElementFactory {
 
     notOr1.outputs[0].connect(outputBus.inputs[0]);
     notOr2.outputs[0].connect(outputBus.inputs[1]);
-
-    const elements = new Set([notOr1, notOr2]);
 
     return new CompositeElement(inputBus, outputBus, this._signalPropagator);
   }
