@@ -1,4 +1,4 @@
-import type { ConnectorInterface, ElementInterface, SignalPropagatorInterface } from "./types";
+import { ConnectorInterface, DirtyPropagatorInterface, ElementInterface, SignalPropagatorInterface } from "./types";
 import { InfiniteLoopError } from "./excpetions";
 
 export class SignalPropagator implements SignalPropagatorInterface {
@@ -49,8 +49,7 @@ export class SignalPropagator implements SignalPropagatorInterface {
   }
 }
 
-// TODO set all dirty
-class ResetElementPropagator {
+export class ResetElementPropagator implements DirtyPropagatorInterface {
   private readonly _visitedDirtyConnectors: Set<ConnectorInterface>;
 
   constructor() {
@@ -61,23 +60,25 @@ class ResetElementPropagator {
     this._visitedDirtyConnectors.clear();
 
     let targets: ConnectorInterface[] = element.inputs;
+    const stopConnectors: Set<ConnectorInterface> = new Set(element.outputs);
 
     while (targets.length > 0) {
-      targets = targets.flatMap((target) => this._handleTarget(target, element));
+      targets = targets.flatMap((target) => this._handleTarget(target, stopConnectors));
     }
   }
 
-  private _handleTarget(target: ConnectorInterface, element: ElementInterface): Array<ConnectorInterface> {
+  private _handleTarget(target: ConnectorInterface, stopConnectors: Set<ConnectorInterface>): Array<ConnectorInterface> {
     if (this._visitedDirtyConnectors.has(target)) {
       return [];
     }
     this._visitedDirtyConnectors.add(target);
 
-    if (target.element === element) {
+    target.makeDirty();
 
+    if (stopConnectors.has(target)) {
+      return [];
     }
 
-    // TODO set dirty and check got element output
-    return target.propagate();
+    return target.targets;
   }
 }

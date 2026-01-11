@@ -27,6 +27,8 @@ export abstract class BaseConnector implements ConnectorInterface {
 
   abstract get type(): ConnectorType;
 
+  abstract get targets(): Array<InputConnectorInterface>;
+
   set value(value: boolean) {
     this._dirty ||= this._value !== value;
     this._value = value;
@@ -47,6 +49,10 @@ export abstract class BaseConnector implements ConnectorInterface {
   get index(): number {
     return this._index;
   }
+
+  public makeDirty() {
+    this._dirty = true;
+  }
 }
 
 export class InputConnector extends BaseConnector implements InputConnectorInterface {
@@ -58,6 +64,10 @@ export class InputConnector extends BaseConnector implements InputConnectorInter
 
   public static createCollection(element: ElementInterface, size: number): Array<InputConnectorInterface> {
     return Array.from({ length: size }, (_, i) => new InputConnector(element, i));
+  }
+
+  get targets(): Array<InputConnectorInterface> {
+    return [...this._element.outputs];
   }
 
   public propagate(): Array<ConnectorInterface> {

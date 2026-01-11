@@ -6,13 +6,14 @@ export interface ConnectorInterface {
   readonly dirty: boolean;
   readonly element: ElementInterface;
   readonly index: number;
+  readonly targets: Array<InputConnectorInterface>;
   propagate(): Array<ConnectorInterface>;
+  makeDirty(): void;
 }
 
 export interface InputConnectorInterface extends ConnectorInterface {}
 
 export interface OutputConnectorInterface extends ConnectorInterface {
-  readonly targets: Array<InputConnectorInterface>;
   connect(connector: InputConnectorInterface): void;
   disconnect(connector: InputConnectorInterface): void;
 }
@@ -29,4 +30,8 @@ export interface CompositeElementInterface extends ElementInterface {
 
 export interface SignalPropagatorInterface {
   propagate(targets: ConnectorInterface[]): Set<ConnectorInterface>;
+}
+
+export interface DirtyPropagatorInterface {
+  propagate(element: ElementInterface): void;
 }
