@@ -22,7 +22,7 @@ export interface ElementInterface {
 }
 
 export interface CompositeElementInterface extends ElementInterface {
-  init(): void;
+  init(): Array<ConnectorInterface>;
 }
 
 export interface SignalPropagatorInterface {

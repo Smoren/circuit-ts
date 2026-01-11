@@ -78,6 +78,7 @@ export class CompositeElement implements CompositeElementInterface {
   readonly inputs: Array<InputConnectorInterface>;
   readonly outputs: Array<OutputConnectorInterface>;
   private readonly _signalPropagator: SignalPropagatorInterface;
+  private _isInited: boolean = false;
 
   constructor(
     inputBus: BusElement,
@@ -89,12 +90,13 @@ export class CompositeElement implements CompositeElementInterface {
     this._signalPropagator = signalPropagator;
   }
 
-  public init() {
-    this._signalPropagator.propagate(this.inputs);
+  public init(): Array<ConnectorInterface> {
+    return this.propagate();
   }
 
   public propagate(index?: number): Array<ConnectorInterface> {
-    const inputs = index === undefined ? this.inputs : [this.inputs[index]];
+    const inputs = (index === undefined || !this._isInited) ? this.inputs : [this.inputs[index]];
+    this._isInited = true;
 
     const dirtyConnectors: Set<ConnectorInterface> = this._signalPropagator.propagate(inputs);
     const outputConnectors: Set<ConnectorInterface> = new Set(this.outputs);
