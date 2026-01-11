@@ -48,3 +48,8 @@ export class SignalPropagator implements SignalPropagatorInterface {
     return target.propagate();
   }
 }
+
+// TODO set all dirty
+// class ResetPropagator implements SignalPropagatorInterface {
+//
+// }
