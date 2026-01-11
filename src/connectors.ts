@@ -89,7 +89,8 @@ export class OutputConnector implements OutputConnectorInterface {
     if (!this._dirty) {
       return [];
     }
-    this._dirty = false;
+    // this._dirty = false;
+    this._dirty = this._targets.size == 0;
 
     const result = [];
     for (const target of this._targets) {

@@ -98,17 +98,7 @@ export class CompositeElement implements CompositeElementInterface {
     const inputs = (index === undefined || !this._isInited) ? this.inputs : [this.inputs[index]];
     this._isInited = true;
 
-    const dirtyConnectors: Set<ConnectorInterface> = this._signalPropagator.propagate(inputs);
-    const outputConnectors: Set<ConnectorInterface> = new Set(this.outputs);
-
-    const result = []
-
-    for (const connector of dirtyConnectors) {
-      if (outputConnectors.has(connector)) {
-        result.push(connector);
-      }
-    }
-
-    return result;
+    this._signalPropagator.propagate(inputs);
+    return this.outputs.filter((output) => output.dirty);
   }
 }
