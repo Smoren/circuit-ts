@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@jest/globals'
+import { describe, expect, it } from '@jest/globals';
 import { NotElement } from "../../src/elements";
 
 describe.each([

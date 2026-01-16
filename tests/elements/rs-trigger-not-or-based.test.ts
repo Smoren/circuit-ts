@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@jest/globals'
+import { describe, expect, it } from '@jest/globals';
 import { CompositeElementFactory } from "../../src/factories";
 import { ResetElementPropagator, SignalPropagator } from "../../src/propagators";
 

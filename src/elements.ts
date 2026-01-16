@@ -17,7 +17,9 @@ export abstract class BaseElement implements ElementInterface {
     this.outputs = OutputConnector.createCollection(this, outputsCount);
   }
 
-  public init(): void {}
+  public init(): void {
+    this.propagate();
+  }
 
   public propagate(index?: number): Array<ConnectorInterface> {
     return this.outputs.filter((output) => output.dirty);

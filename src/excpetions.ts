@@ -4,7 +4,7 @@ export class InfiniteLoopError extends Error {
   private readonly _connector: ConnectorInterface;
 
   constructor(connector: ConnectorInterface) {
-    super(`Infinite loop detected at connector ${connector}`);
+    super('Infinite loop detected');
     this.name = "InfiniteLoopError";
     this._connector = connector;
   }
