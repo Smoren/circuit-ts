@@ -33,6 +33,7 @@ it('Base Signal Propagator test', () => {
   expect(() => signalPropagator.propagate(inputBus.inputs)).toThrow(InfiniteLoopError);
   try {
     signalPropagator.propagate(inputBus.inputs);
+    expect(true).toEqual(false);
   } catch (e) {
     expect((e as InfiniteLoopError).name).toEqual('InfiniteLoopError');
     expect((e as InfiniteLoopError).message).toEqual('Infinite loop detected');

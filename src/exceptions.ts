@@ -81,3 +81,23 @@ export class InvalidConnectorsPairError extends ConnectionError {
     return this._rhsConnector;
   }
 }
+
+export class ConnectionNotExistError extends ConnectionError {
+  private readonly _inputConnector: InputConnectorInterface;
+  private readonly _outputConnector: OutputConnectorInterface;
+
+  constructor(inputConnector: InputConnectorInterface, outputConnector: OutputConnectorInterface) {
+    super('Connection does not exist');
+    this.name = "ConnectionNotExistError";
+    this._inputConnector = inputConnector;
+    this._outputConnector = outputConnector;
+  }
+
+  public get inputConnector(): InputConnectorInterface {
+    return this._inputConnector;
+  }
+
+  public get outputConnector(): OutputConnectorInterface {
+    return this._outputConnector;
+  }
+}

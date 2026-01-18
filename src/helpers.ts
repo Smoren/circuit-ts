@@ -4,7 +4,12 @@ import {
   InputConnectorInterface,
   OutputConnectorInterface,
 } from "./types";
-import { DuplicateConnectionError, InputAlreadyConnectedError, InvalidConnectorsPairError } from "./exceptions";
+import {
+  ConnectionNotExistError,
+  DuplicateConnectionError,
+  InputAlreadyConnectedError,
+  InvalidConnectorsPairError,
+} from "./exceptions";
 
 export class ConnectionManager implements ConnectionManagerInterface {
   private _connectionMap: Map<InputConnectorInterface, OutputConnectorInterface>;
@@ -30,6 +35,10 @@ export class ConnectionManager implements ConnectionManagerInterface {
 
   public disconnect(lhs: ConnectorInterface, rhs: ConnectorInterface): void {
     const [outputConnector, inputConnector] = this.getOrderedPair(lhs, rhs);
+
+    if (!this._connectionMap.has(inputConnector)) {
+      throw new ConnectionNotExistError(inputConnector, outputConnector);
+    }
 
     outputConnector.removeTarget(inputConnector);
     inputConnector.value = false;
