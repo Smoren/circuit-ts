@@ -52,7 +52,7 @@ export class InputAlreadyConnectedError extends ConnectionError {
   private readonly _inputConnector: InputConnectorInterface;
 
   constructor(inputConnector: InputConnectorInterface) {
-    super('Duplicate connection detected');
+    super('Input connector is already has connection');
     this.name = "InputAlreadyConnectedError";
     this._inputConnector = inputConnector;
   }
@@ -68,6 +68,7 @@ export class InvalidConnectorsPairError extends ConnectionError {
 
   constructor(lhsConnector: ConnectorInterface, rhsConnector: ConnectorInterface) {
     super('Invalid connectors pair');
+    this.name = "InvalidConnectorsPairError";
     this._lhsConnector = lhsConnector;
     this._rhsConnector = rhsConnector;
   }

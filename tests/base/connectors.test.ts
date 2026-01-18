@@ -1,7 +1,7 @@
 import { expect, it } from '@jest/globals';
 import { NotElement } from "../../src/elements";
 import { ConnectionManager } from "../../src/helpers";
-import { DuplicateConnectionError, InvalidConnectorsPairError } from "../../src/exceptions";
+import { DuplicateConnectionError, InputAlreadyConnectedError, InvalidConnectorsPairError } from "../../src/exceptions";
 
 it('Base Connectors test', () => {
   const connectionManager = new ConnectionManager();
@@ -28,10 +28,45 @@ it('Base Connectors test', () => {
 
   connectionManager.disconnect(input, output);
   expect(output.targets.length).toEqual(0);
+});
 
-  expect(() => connectionManager.disconnect(input, input)).toThrow(InvalidConnectorsPairError);
-  expect(() => connectionManager.disconnect(output, output)).toThrow(InvalidConnectorsPairError);
+it('Base Connector Exceptions test', () => {
+  const connectionManager = new ConnectionManager();
 
-  connectionManager.connect(output, input);
-  expect(() => connectionManager.connect(output, input)).toThrow(DuplicateConnectionError);
+  const notElement1 = new NotElement();
+  const notElement2 = new NotElement();
+  const notElement3 = new NotElement();
+
+  notElement1.init();
+  notElement2.init();
+  notElement3.init();
+
+  connectionManager.connect(notElement1.outputs[0], notElement2.inputs[0]);
+
+  expect(() => connectionManager.connect(notElement1.outputs[0], notElement2.inputs[0])).toThrow(DuplicateConnectionError);
+  try {
+    connectionManager.connect(notElement1.outputs[0], notElement2.inputs[0]);
+  } catch (e) {
+    expect((e as DuplicateConnectionError).name).toEqual("DuplicateConnectionError");
+    expect((e as DuplicateConnectionError).inputConnector).toEqual(notElement2.inputs[0]);
+    expect((e as DuplicateConnectionError).outputConnector).toEqual(notElement1.outputs[0]);
+  }
+
+  expect(() => connectionManager.connect(notElement3.outputs[0], notElement2.inputs[0])).toThrow(InputAlreadyConnectedError);
+  try {
+    connectionManager.connect(notElement3.outputs[0], notElement2.inputs[0]);
+  } catch (e) {
+    expect((e as InputAlreadyConnectedError).name).toEqual("InputAlreadyConnectedError");
+    expect((e as InputAlreadyConnectedError).inputConnector).toEqual(notElement2.inputs[0]);
+  }
+
+  expect(() => connectionManager.disconnect(notElement1.outputs[0], notElement2.outputs[0])).toThrow(InvalidConnectorsPairError);
+  expect(() => connectionManager.disconnect(notElement1.inputs[0], notElement2.inputs[0])).toThrow(InvalidConnectorsPairError);
+  try {
+    connectionManager.connect(notElement1.outputs[0], notElement2.outputs[0]);
+  } catch (e) {
+    expect((e as InvalidConnectorsPairError).name).toEqual("InvalidConnectorsPairError");
+    expect((e as InvalidConnectorsPairError).lhsConnector).toEqual(notElement1.outputs[0]);
+    expect((e as InvalidConnectorsPairError).rhsConnector).toEqual(notElement2.outputs[0]);
+  }
 });
