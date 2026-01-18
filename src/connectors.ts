@@ -6,17 +6,13 @@ import type {
   OutputConnectorInterface,
 } from "./types";
 
-let ID_COUNTER = 1;
-
 export abstract class BaseConnector implements ConnectorInterface {
-  protected _id: number;
   protected _value: boolean;
   protected _dirty: boolean;
   protected readonly _element: ElementInterface;
   protected readonly _index: number;
 
   protected constructor(element: ElementInterface, index: number) {
-    this._id = ID_COUNTER++;
     this._value = false;
     this._dirty = true;
     this._element = element;
