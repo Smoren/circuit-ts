@@ -42,8 +42,7 @@ export class ConnectionManager implements ConnectionManagerInterface {
       return [lhs as OutputConnectorInterface, rhs as InputConnectorInterface];
     } else if (lhs.type === 'input' && rhs.type === 'output') {
       return [rhs as OutputConnectorInterface, lhs as InputConnectorInterface];
-    } else {
-      throw new InvalidConnectorsPairError(lhs, rhs);
     }
+    throw new InvalidConnectorsPairError(lhs, rhs);
   }
 }
