@@ -1,6 +1,7 @@
 import { describe, expect, it } from '@jest/globals';
 import { CompositeElementFactory } from "../../src/factories";
 import { ResetElementPropagator, SignalPropagator } from "../../src/propagators";
+import { ConnectionManager } from "../../src/helpers";
 
 describe.each([
   ...dataProviderForRsTriggerNotOrBasedDynamicTest(),
@@ -8,9 +9,10 @@ describe.each([
   'NotOrBased RS trigger Dynamic Test',
   (operations: [number, boolean, boolean, boolean][]) => {
     it('', () => {
+      const connectionManager = new ConnectionManager();
       const signalPropagator = new SignalPropagator();
       const resetPropagator = new ResetElementPropagator();
-      const factory = new CompositeElementFactory(signalPropagator, resetPropagator);
+      const factory = new CompositeElementFactory(connectionManager, signalPropagator, resetPropagator);
 
       const rsTrigger = factory.createRsTriggerNotOrBased();
 

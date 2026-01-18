@@ -32,3 +32,8 @@ export interface SignalPropagatorInterface {
 export interface ResetElementPropagatorInterface {
   propagate(element: ElementInterface): void;
 }
+
+export interface ConnectionManagerInterface {
+  connect(lhs: ConnectorInterface, rhs: ConnectorInterface): void;
+  disconnect(lhs: ConnectorInterface, rhs: ConnectorInterface): void;
+}

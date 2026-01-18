@@ -1,5 +1,5 @@
 import { ConnectorInterface, ResetElementPropagatorInterface, ElementInterface, SignalPropagatorInterface } from "./types";
-import { InfiniteLoopError } from "./excpetions";
+import { InfiniteLoopError } from "./exceptions";
 
 export class SignalPropagator implements SignalPropagatorInterface {
   private readonly _visitCounterLimit: number;

@@ -1,4 +1,5 @@
 import type {
+  ConnectionManagerInterface,
   ElementInterface,
   ResetElementPropagatorInterface,
   SignalPropagatorInterface,
@@ -6,10 +7,16 @@ import type {
 import { AndElement, BusElement, CompositeElement, NotElement, OrElement } from "./elements";
 
 export class CompositeElementFactory {
+  private readonly _connectionManager: ConnectionManagerInterface;
   private readonly _signalPropagator: SignalPropagatorInterface;
   private readonly _resetElementPropagator: ResetElementPropagatorInterface;
 
-  constructor(signalPropagator: SignalPropagatorInterface, resetElementPropagator: ResetElementPropagatorInterface) {
+  constructor(
+    connectionManager: ConnectionManagerInterface,
+    signalPropagator: SignalPropagatorInterface,
+    resetElementPropagator: ResetElementPropagatorInterface,
+  ) {
+    this._connectionManager = connectionManager;
     this._signalPropagator = signalPropagator;
     this._resetElementPropagator = resetElementPropagator;
   }
@@ -22,11 +29,11 @@ export class CompositeElementFactory {
     const notElement = new NotElement();
 
     for (let i=0; i<inputsCount; ++i) {
-      inputBus.outputs[i].connect(orElement.inputs[i]);
+      this._connectionManager.connect(inputBus.outputs[i], orElement.inputs[i]);
     }
 
-    orElement.outputs[0].connect(notElement.inputs[0]);
-    notElement.outputs[0].connect(outputBus.inputs[0]);
+    this._connectionManager.connect(orElement.outputs[0], notElement.inputs[0]);
+    this._connectionManager.connect(notElement.outputs[0], outputBus.inputs[0]);
 
     return new CompositeElement(inputBus, outputBus, this._signalPropagator, this._resetElementPropagator);
   }
@@ -39,11 +46,11 @@ export class CompositeElementFactory {
     const notElement = new NotElement();
 
     for (let i=0; i<inputsCount; ++i) {
-      inputBus.outputs[i].connect(andElement.inputs[i]);
+      this._connectionManager.connect(inputBus.outputs[i], andElement.inputs[i]);
     }
 
-    andElement.outputs[0].connect(notElement.inputs[0]);
-    notElement.outputs[0].connect(outputBus.inputs[0]);
+    this._connectionManager.connect(andElement.outputs[0], notElement.inputs[0]);
+    this._connectionManager.connect(notElement.outputs[0], outputBus.inputs[0]);
 
     return new CompositeElement(inputBus, outputBus, this._signalPropagator, this._resetElementPropagator);
   }
@@ -55,14 +62,14 @@ export class CompositeElementFactory {
     const notOr1 = this.createNotOr(2);
     const notOr2 = this.createNotOr(2);
 
-    inputBus.outputs[0].connect(notOr1.inputs[0]);
-    inputBus.outputs[1].connect(notOr2.inputs[0]);
+    this._connectionManager.connect(inputBus.outputs[0], notOr1.inputs[0]);
+    this._connectionManager.connect(inputBus.outputs[1], notOr2.inputs[0]);
 
-    notOr1.outputs[0].connect(notOr2.inputs[1]);
-    notOr2.outputs[0].connect(notOr1.inputs[1]);
+    this._connectionManager.connect(notOr1.outputs[0], notOr2.inputs[1]);
+    this._connectionManager.connect(notOr2.outputs[0], notOr1.inputs[1]);
 
-    notOr1.outputs[0].connect(outputBus.inputs[0]);
-    notOr2.outputs[0].connect(outputBus.inputs[1]);
+    this._connectionManager.connect(notOr1.outputs[0], outputBus.inputs[0]);
+    this._connectionManager.connect(notOr2.outputs[0], outputBus.inputs[1]);
 
     return new CompositeElement(inputBus, outputBus, this._signalPropagator, this._resetElementPropagator);
   }

@@ -101,7 +101,6 @@ export class OutputConnector extends BaseConnector implements OutputConnectorInt
       return [];
     }
     this._dirty = false;
-    // this._dirty = this._targets.size == 0;
 
     const result = [];
     for (const target of this._targets) {
@@ -116,12 +115,12 @@ export class OutputConnector extends BaseConnector implements OutputConnectorInt
 
   public connect(target: InputConnectorInterface): void {
     this._targets.add(target);
-    target.value = this.value;
+    // target.value = this.value;
   }
 
   public disconnect(target: InputConnectorInterface): void {
     // TODO нужен ConnectionManager, чтобы избежать подключения 2-х линков к одному входу (либо предусмотреть обработку)
     this._targets.delete(target);
-    target.value = false;
+    // target.value = false;
   }
 }
