@@ -1,6 +1,7 @@
 import { expect, it } from '@jest/globals';
 import { NotElement } from "../../src/elements";
 import { ConnectionManager } from "../../src/helpers";
+import { DuplicateConnectionError, InvalidConnectorsPairError } from "../../src/exceptions";
 
 it('Base Connectors test', () => {
   const connectionManager = new ConnectionManager();
@@ -27,4 +28,10 @@ it('Base Connectors test', () => {
 
   connectionManager.disconnect(output, input);
   expect(output.targets.length).toEqual(0);
+
+  expect(() => connectionManager.disconnect(input, input)).toThrow(InvalidConnectorsPairError);
+  expect(() => connectionManager.disconnect(output, output)).toThrow(InvalidConnectorsPairError);
+
+  connectionManager.connect(output, input);
+  expect(() => connectionManager.connect(output, input)).toThrow(DuplicateConnectionError);
 });
