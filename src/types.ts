@@ -14,8 +14,8 @@ export interface ConnectorInterface {
 export interface InputConnectorInterface extends ConnectorInterface {}
 
 export interface OutputConnectorInterface extends ConnectorInterface {
-  connect(connector: InputConnectorInterface): void;
-  disconnect(connector: InputConnectorInterface): void;
+  addTarget(connector: InputConnectorInterface): void;
+  removeTarget(connector: InputConnectorInterface): void;
 }
 
 export interface ElementInterface {

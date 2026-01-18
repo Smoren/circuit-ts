@@ -22,7 +22,7 @@ export class ConnectionManager implements ConnectionManagerInterface {
       throw new InputAlreadyConnectedError(inputConnector);
     }
 
-    outputConnector.connect(inputConnector);
+    outputConnector.addTarget(inputConnector);
     inputConnector.value = outputConnector.value;
 
     this._connectionMap.set(inputConnector, outputConnector);
@@ -31,7 +31,7 @@ export class ConnectionManager implements ConnectionManagerInterface {
   public disconnect(lhs: ConnectorInterface, rhs: ConnectorInterface): void {
     const [outputConnector, inputConnector] = this.getOrderedPair(lhs, rhs);
 
-    outputConnector.disconnect(inputConnector);
+    outputConnector.removeTarget(inputConnector);
     inputConnector.value = false;
 
     this._connectionMap.delete(inputConnector);

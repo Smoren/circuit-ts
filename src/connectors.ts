@@ -113,12 +113,12 @@ export class OutputConnector extends BaseConnector implements OutputConnectorInt
     return result;
   }
 
-  public connect(target: InputConnectorInterface): void {
+  public addTarget(target: InputConnectorInterface): void {
     this._targets.add(target);
     // target.value = this.value;
   }
 
-  public disconnect(target: InputConnectorInterface): void {
+  public removeTarget(target: InputConnectorInterface): void {
     // TODO нужен ConnectionManager, чтобы избежать подключения 2-х линков к одному входу (либо предусмотреть обработку)
     this._targets.delete(target);
     // target.value = false;
