@@ -40,7 +40,8 @@ export class ConnectionManager implements ConnectionManagerInterface {
   private getOrderedPair(lhs: ConnectorInterface, rhs: ConnectorInterface): [OutputConnectorInterface, InputConnectorInterface] {
     if (lhs.type === 'output' && rhs.type === 'input') {
       return [lhs as OutputConnectorInterface, rhs as InputConnectorInterface];
-    } else if (lhs.type === 'input' && rhs.type === 'output') {
+    }
+    if (lhs.type === 'input' && rhs.type === 'output') {
       return [rhs as OutputConnectorInterface, lhs as InputConnectorInterface];
     }
     throw new InvalidConnectorsPairError(lhs, rhs);
