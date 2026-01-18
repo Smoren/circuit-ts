@@ -26,7 +26,7 @@ it('Base Connectors test', () => {
   connectionManager.connect(output, input);
   expect(output.targets.length).toEqual(1);
 
-  connectionManager.disconnect(output, input);
+  connectionManager.disconnect(input, output);
   expect(output.targets.length).toEqual(0);
 
   expect(() => connectionManager.disconnect(input, input)).toThrow(InvalidConnectorsPairError);
