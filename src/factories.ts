@@ -72,6 +72,13 @@ export class CompositeElementFactory {
     this._connectionManager.connect(notOr1.outputs[0], outputBus.inputs[0]);
     this._connectionManager.connect(notOr2.outputs[0], outputBus.inputs[1]);
 
-    return new CompositeElement(NAME_RS_TRIGGER, inputBus, outputBus, this._signalPropagator, this._resetElementPropagator);
+    const result = new CompositeElement(NAME_RS_TRIGGER, inputBus, outputBus, this._signalPropagator, this._resetElementPropagator);
+
+    result.inputs[0].name = 'R';
+    result.inputs[1].name = 'S';
+    result.outputs[0].name = 'Q';
+    result.outputs[1].name = 'Ǭ';
+
+    return result;
   }
 }
