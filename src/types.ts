@@ -2,7 +2,7 @@ export type ConnectorType = 'input' | 'output';
 
 export interface ConnectorInterface {
   value: boolean;
-  name: string;
+  name?: string;
   readonly type: ConnectorType;
   readonly dirty: boolean;
   readonly element: ElementInterface;
