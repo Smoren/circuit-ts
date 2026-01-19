@@ -4,14 +4,15 @@ import { ResetElementPropagator, SignalPropagator } from "../../src/propagators"
 import { InfiniteLoopError } from "../../src/exceptions";
 import { BaseConnector } from "../../src/connectors";
 import { ConnectionManager } from "../../src/helpers";
+import { NAME_INPUT_BUS, NAME_OUTPUT_BUS } from "../../src/constants";
 
 it('Base Signal Propagator test', () => {
   const connectionManager = new ConnectionManager();
   const signalPropagator = new SignalPropagator();
 
-  const inputBus = new BusElement(1);
+  const inputBus = new BusElement(NAME_INPUT_BUS, 1);
   const notElement = new NotElement();
-  const outputBus = new BusElement(1);
+  const outputBus = new BusElement(NAME_OUTPUT_BUS, 1);
 
   inputBus.init();
   notElement.init();

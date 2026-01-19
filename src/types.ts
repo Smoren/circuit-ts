@@ -2,6 +2,7 @@ export type ConnectorType = 'input' | 'output';
 
 export interface ConnectorInterface {
   value: boolean;
+  name: string;
   readonly type: ConnectorType;
   readonly dirty: boolean;
   readonly element: ElementInterface;
@@ -19,6 +20,7 @@ export interface OutputConnectorInterface extends ConnectorInterface {
 }
 
 export interface ElementInterface {
+  name: string;
   readonly inputs: Array<InputConnectorInterface>;
   readonly outputs: Array<OutputConnectorInterface>;
   init(): void;

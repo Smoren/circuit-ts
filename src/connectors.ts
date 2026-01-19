@@ -8,15 +8,17 @@ import type {
 
 export abstract class BaseConnector implements ConnectorInterface {
   protected _value: boolean;
+  protected _name: string;
   protected _dirty: boolean;
   protected readonly _element: ElementInterface;
   protected readonly _index: number;
 
-  protected constructor(element: ElementInterface, index: number) {
+  protected constructor(element: ElementInterface, index: number, name?: string) {
     this._value = false;
     this._dirty = true;
     this._element = element;
     this._index = index;
+    this._name = name ?? String(index);
   }
 
   public abstract propagate(): Array<ConnectorInterface>;
@@ -32,6 +34,14 @@ export abstract class BaseConnector implements ConnectorInterface {
 
   get value(): boolean {
     return this._value;
+  }
+
+  set name(name: string) {
+    this._name = name;
+  }
+
+  get name(): string {
+    return this._name;
   }
 
   get dirty(): boolean {

@@ -2,14 +2,15 @@ import { expect, it } from '@jest/globals';
 import { BusElement, CompositeElement, NotElement } from "../../src/elements";
 import { ResetElementPropagator, SignalPropagator } from "../../src/propagators";
 import { ConnectionManager } from "../../src/helpers";
+import { NAME_INPUT_BUS, NAME_OUTPUT_BUS } from "../../src/constants";
 
 it('Base Elements test', () => {
   const connectionManager = new ConnectionManager();
   const signalPropagator = new SignalPropagator();
 
-  const inputBus = new BusElement(1);
+  const inputBus = new BusElement(NAME_INPUT_BUS, 1);
   const notElement = new NotElement();
-  const outputBus = new BusElement(1);
+  const outputBus = new BusElement(NAME_OUTPUT_BUS, 1);
 
   inputBus.init();
   notElement.init();
@@ -40,7 +41,7 @@ it('Base Elements test', () => {
   expect(outputBus.outputs[0].value).toEqual(true);
 
   {
-    const compositeElement = new CompositeElement(inputBus, outputBus, signalPropagator, new ResetElementPropagator());
+    const compositeElement = new CompositeElement("TEST", inputBus, outputBus, signalPropagator, new ResetElementPropagator());
 
     expect(compositeElement.inputs[0].value).toEqual(false);
     expect(compositeElement.outputs[0].value).toEqual(true);
@@ -59,7 +60,7 @@ it('Base Elements test', () => {
   }
 
   {
-    const compositeElement = new CompositeElement(inputBus, outputBus, signalPropagator, new ResetElementPropagator());
+    const compositeElement = new CompositeElement("TEST", inputBus, outputBus, signalPropagator, new ResetElementPropagator());
     compositeElement.propagate();
 
     expect(compositeElement.inputs[0].value).toEqual(false);
