@@ -1,5 +1,6 @@
 {
   "name": "circuit-ts",
+  "description": "Library for simulating digital circuits and logic gates, providing a fluent interface for circuit design and analysis.",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -12,6 +13,22 @@
     "lint": "ts-scripts lint",
     "prepublishOnly": "npm run build"
   },
+  "files": [
+    "es",
+    "lib",
+    "src",
+    "tests"
+  ],
+  "keywords": [
+    "circuit",
+    "simulation",
+    "logic-gates",
+    "typescript",
+    "digital-logic",
+    "signal-propagation",
+    "electronics",
+    "education"
+  ],
   "dependencies": {},
   "devDependencies": {
     "@borderless/ts-scripts": "^0.13.6",
@@ -27,5 +44,8 @@
     "unmockedModulePathPatterns": [],
     "preset": "ts-jest",
     "testEnvironment": "node"
-  }
+  },
+  "types": "./lib/index.d.ts",
+  "jsnext:main": "./es/index.js",
+  "sideEffects": false
 }
