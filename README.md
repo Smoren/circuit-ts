@@ -41,15 +41,15 @@ Handles the wiring between output and input connectors, ensuring validity and pr
 ## Quick Start: Basic Logic Gates
 
 ```typescript
-import { boolean } from 'circuit-ts';
+import * as circuit from 'circuit-ts';
 
 // 1. Setup environment
-const connectionManager = boolean.factories.createConnectionManager();
-const signalPropagator = boolean.factories.createSignalPropagator();
+const connectionManager = circuit.boolean.factories.createConnectionManager();
+const signalPropagator = circuit.boolean.factories.createSignalPropagator();
 
 // 2. Create elements
-const andElement = boolean.factories.createAndElement(2); // 2-input AND element
-const notElement = boolean.factories.createNotElement();
+const andElement = circuit.boolean.factories.createAndElement(2); // 2-input AND element
+const notElement = circuit.boolean.factories.createNotElement();
 
 // 3. Connect them (AND output -> NOT input)
 connectionManager.connect(andElement.outputs[0], notElement.inputs[0]);
@@ -69,17 +69,60 @@ console.log(notElement.outputs[0].value); // false (AND(true, true) = true, NOT(
 
 ## Advanced Usage
 
-### Creating Composite Elements
-Composite elements allow you to build complex components like an RS-Trigger or a half-adder.
+### Custom Composite Elements
+
+You can build your own complex elements by connecting basic gates and wrapping them into a `CompositeElement`.
 
 ```typescript
-import { boolean } from 'circuit-ts';
+import * as circuit from 'circuit-ts';
 
-const connectionManager = boolean.factories.createConnectionManager();
-const signalPropagator = boolean.factories.createSignalPropagator();
-const resetPropagator = boolean.factories.createResetElementPropagator();
+// 1. Setup environment
+const connectionManager = circuit.boolean.factories.createConnectionManager();
+const signalPropagator = circuit.boolean.factories.createSignalPropagator();
+const resetPropagator = circuit.boolean.factories.createResetElementPropagator();
 
-const factory = new boolean.factories.CompositeElementFactory(
+const factory = new circuit.boolean.factories.CompositeElementFactory(
+  connectionManager, 
+  signalPropagator, 
+  resetPropagator
+);
+
+// 2. Define internal elements and buses
+const inputBus = circuit.boolean.factories.createBusElement(2);
+const outputBus = circuit.boolean.factories.createBusElement(1);
+
+const andElement = circuit.boolean.factories.createAndElement(2);
+const notElement = circuit.boolean.factories.createNotElement();
+
+// 3. Wire internal components
+connectionManager.connect(inputBus.outputs[0], andElement.inputs[0]);
+connectionManager.connect(inputBus.outputs[1], andElement.inputs[1]);
+connectionManager.connect(andElement.outputs[0], notElement.inputs[0]);
+connectionManager.connect(notElement.outputs[0], outputBus.inputs[0]);
+
+// 4. Create the composite element
+const customNand = factory.createComposite(inputBus, outputBus);
+
+// 5. Use it
+customNand.init();
+customNand.inputs[0].value = true;
+customNand.inputs[1].value = true;
+customNand.propagate();
+
+console.log(customNand.outputs[0].value); // false
+```
+
+### Predefined Composite Elements
+Composite elements allow you to use complex components like an RS-Trigger or a half-adder provided by the library.
+
+```typescript
+import * as circuit from 'circuit-ts';
+
+const connectionManager = circuit.boolean.factories.createConnectionManager();
+const signalPropagator = circuit.boolean.factories.createSignalPropagator();
+const resetPropagator = circuit.boolean.factories.createResetElementPropagator();
+
+const factory = new circuit.boolean.factories.CompositeElementFactory(
   connectionManager, 
   signalPropagator, 
   resetPropagator
@@ -111,7 +154,7 @@ console.log(rsTrigger.outputs[0].value); // true (Q = 1)
 ### `ResetElementPropagator<TValue>`
 - `propagate(element)`: Recursively marks all downstream connectors as dirty.
 
-### `boolean.factories`
+### `circuit.boolean.factories`
 - `createConnectionManager()`: Returns a `ConnectionManager<boolean>`.
 - `createSignalPropagator()`: Returns a `SignalPropagator<boolean>`.
 - `createResetElementPropagator()`: Returns a `ResetElementPropagator<boolean>`.
@@ -120,7 +163,7 @@ console.log(rsTrigger.outputs[0].value); // true (Q = 1)
 - `createNotElement()`: Returns a `NotElement`.
 - `createBusElement(channelsCount)`: Returns a `BusElement<boolean>`.
 
-### `boolean.factories.CompositeElementFactory`
+### `circuit.boolean.factories.CompositeElementFactory`
 - `createComposite(inputBus, outputBus)`: Returns a generic `CompositeElement`.
 - `createNotOr(inputsCount)`: Returns a NOR gate.
 - `createNotAnd(inputsCount)`: Returns a NAND gate.
