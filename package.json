@@ -1,8 +1,22 @@
 {
   "name": "circuit-ts",
-  "description": "Library for simulating digital circuits and logic gates, providing a fluent interface for circuit design and analysis.",
   "version": "0.1.0",
-  "private": true,
+  "description": "Library for simulating digital circuits and logic gates, providing a fluent interface for circuit design and analysis.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Smoren/circuit-ts.git"
+  },
+  "author": {
+    "name": "Smoren",
+    "email": "ofigate@gmail.com",
+    "url": "https://github.com/Smoren"
+  },
+  "homepage": "https://github.com/Smoren/circuit-ts#readme",
+  "bugs": {
+    "url": "https://github.com/Smoren/circuit-ts/issues"
+  },
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
   "scripts": {
     "build": "npm run build:commonjs && npm run build:es",
     "build:commonjs": "rimraf lib && tsc --downlevelIteration --target es5 --outDir lib --module commonjs --declaration",
