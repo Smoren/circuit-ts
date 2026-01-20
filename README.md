@@ -3,19 +3,25 @@
 A TypeScript library for simulating logic circuits. Build complex digital systems from basic logic gates, 
 manage signal propagation, and create reusable composite elements.
 
+## Target Audience & Analogues
+
+**circuit-ts** is designed for:
+- **Education**: Learning how digital logic gates and complex circuits (like flip-flops, adders, etc.) work through "code as a circuit".
+- **Digital Simulation**: Prototyping and simulating digital systems in a software environment.
+- **Circuit-as-Code**: Building reusable logic components using a developer-friendly API.
+
+**Analogues**:
+- **Logisim / Digital**: Graphical tools for circuit simulation. `circuit-ts` provides a similar experience but in a purely programmatic way.
+- **Hardware Description Languages (VHDL/Verilog)**: While much simpler, `circuit-ts` shares the concept of defining logic and connections, but runs in a standard JavaScript/TypeScript environment.
+
 ## Features
 
-- **Generic Value Support**: While primarily used for boolean logic, the core architecture supports any value type.
-- **Signal Propagation**: Advanced signal propagation mechanism with infinite loop detection.
+- **Generic Value Support**: While primarily used for boolean logic, the core architecture supports any value type (numbers, strings, objects).
+- **Signal Propagation**: Advanced signal propagation mechanism with infinite loop detection and randomization to avoid deterministic bias.
+- **Dirty State Management**: Efficient updates by only propagating changed signals.
 - **Composite Elements**: Easily wrap complex circuits into single reusable components.
 - **Connection Management**: Simplified API for connecting and disconnecting elements.
 - **Extensible**: Create your own elements and propagators by extending base classes.
-
-## Installation
-
-```bash
-npm install circuit-ts
-```
 
 ## Core Concepts
 
@@ -32,11 +38,20 @@ Elements are the building blocks of your circuit.
 
 ### Propagators
 Propagators manage how signals move through the circuit.
-- **SignalPropagator**: Handles the flow of signals across connections. Includes a safety limit to prevent infinite loops in feedback circuits.
-- **ResetElementPropagator**: Used to initialize or reset the state of an entire circuit.
+- **SignalPropagator**: Handles the flow of signals across connections. It uses a queue-based approach to propagate values from outputs to inputs.
+- **ResetElementPropagator**: Used to initialize or reset the state of an entire circuit by marking all connectors as "dirty".
 
 ### ConnectionManager
 Handles the wiring between output and input connectors, ensuring validity and preventing duplicate connections.
+
+### "Dirty" State
+A key concept in `circuit-ts` is the **dirty state**. A connector is considered "dirty" if:
+1. Its value has changed.
+2. It has been explicitly marked as dirty (e.g., during initialization or reset).
+
+The `SignalPropagator` only processes connectors that are dirty. When an element's input becomes dirty, the element recalculates its logic and, if its output value changes, that output also becomes dirty, continuing the propagation chain.
+
+---
 
 ## Quick Start: Basic Logic Gates
 
@@ -54,7 +69,7 @@ const notElement = circuit.boolean.factories.createNotElement();
 // 3. Connect them (AND output -> NOT input)
 connectionManager.connect(andElement.outputs[0], notElement.inputs[0]);
 
-// 4. Initialize elements
+// 4. Initialize elements (marks all outputs as dirty and performs initial propagation)
 andElement.init();
 notElement.init();
 
@@ -62,6 +77,7 @@ notElement.init();
 andElement.inputs[0].value = true;
 andElement.inputs[1].value = true;
 
+// Propagate starting from the changed inputs
 signalPropagator.propagate(andElement.inputs);
 
 console.log(notElement.outputs[0].value); // false (AND(true, true) = true, NOT(true) = false)
@@ -107,6 +123,8 @@ const customNand = factory.createComposite(inputBus, outputBus);
 customNand.init();
 customNand.inputs[0].value = true;
 customNand.inputs[1].value = true;
+
+// Propagate internally (calls SignalPropagator.propagate under the hood)
 customNand.propagate();
 
 console.log(customNand.outputs[0].value); // false
@@ -136,9 +154,45 @@ rsTrigger.init();
 // Inputs: [0] = R (Reset), [1] = S (Set)
 // Outputs: [0] = Q, [1] = !Q
 rsTrigger.inputs[1].value = true; // Set = 1
+
+// propagate(index) triggers propagation starting from the specific input
 rsTrigger.propagate(1);
 
 console.log(rsTrigger.outputs[0].value); // true (Q = 1)
+```
+
+### Using Custom Types (TValue)
+
+The library is fully generic and can work with types other than `boolean`. Here is an example of a simple Adder element that works with numbers.
+
+```typescript
+import * as circuit from 'circuit-ts';
+
+// 1. Define a custom element for addition
+class AdditionElement extends circuit.elements.BaseElement<number> {
+  constructor() {
+    super(2, 1, 0); // 2 inputs, 1 output, default value 0
+  }
+
+  public propagate(index?: number): circuit.ConnectorInterface<number>[] {
+    // Logic: sum all inputs
+    this.outputs[0].value = this.inputs.reduce((sum, input) => sum + input.value, 0);
+    return super.propagate(index);
+  }
+}
+
+// 2. Setup
+const signalPropagator = new circuit.propagators.SignalPropagator<number>();
+const adder = new AdditionElement();
+adder.init();
+
+// 3. Use
+adder.inputs[0].value = 10;
+adder.inputs[1].value = 25;
+
+signalPropagator.propagate(adder.inputs);
+
+console.log(adder.outputs[0].value); // 35
 ```
 
 ## API Reference
@@ -148,11 +202,14 @@ console.log(rsTrigger.outputs[0].value); // true (Q = 1)
 - `disconnect(output, input)`: Removes an existing link.
 
 ### `SignalPropagator<TValue>`
-- `propagate(targets)`: Propagates signals starting from the given connectors.
+- `propagate(targets)`: Propagates signals starting from the given connectors (usually inputs that have changed).
 - `constructor(visitCounterLimit?: number)`: Default limit is 100 to prevent infinite loops.
 
 ### `ResetElementPropagator<TValue>`
-- `propagate(element)`: Recursively marks all downstream connectors as dirty.
+- `propagate(element)`: Recursively marks all connectors within the element (including internal ones for CompositeElements) as dirty.
+
+### `Element.propagate(index?: number)`
+- Calculates element logic and returns dirty outputs. For `CompositeElement`, it also triggers internal signal propagation.
 
 ### `circuit.boolean.factories`
 - `createConnectionManager()`: Returns a `ConnectionManager<boolean>`.
