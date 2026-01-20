@@ -1,18 +1,13 @@
 import { expect, it } from '@jest/globals';
-import { BusElement } from "../../src/elements";
-import { NotElement } from "../../src/boolean/elements";
-import { SignalPropagator } from "../../src/propagators";
-import { InfiniteLoopError } from "../../src/exceptions";
-import { BaseConnector } from "../../src/connectors";
-import { ConnectionManager } from "../../src/helpers";
+import * as circuit from "../../src";
 
 it('Base Signal Propagator test', () => {
-  const connectionManager = new ConnectionManager<boolean>(false);
-  const signalPropagator = new SignalPropagator<boolean>();
+  const connectionManager = new circuit.helpers.ConnectionManager<boolean>(false);
+  const signalPropagator = new circuit.propagators.SignalPropagator<boolean>();
 
-  const inputBus = new BusElement<boolean>(1, false);
-  const notElement = new NotElement();
-  const outputBus = new BusElement<boolean>(1, false);
+  const inputBus = new circuit.elements.BusElement<boolean>(1, false);
+  const notElement = new circuit.boolean.elements.NotElement();
+  const outputBus = new circuit.elements.BusElement<boolean>(1, false);
 
   inputBus.init();
   notElement.init();
@@ -31,16 +26,16 @@ it('Base Signal Propagator test', () => {
   connectionManager.connect(outputBus.outputs[0], inputBus.inputs[0]);
   expect(inputBus.inputs[0].value).toEqual(true);
 
-  expect(() => signalPropagator.propagate(inputBus.inputs)).toThrow(InfiniteLoopError<boolean>);
+  expect(() => signalPropagator.propagate(inputBus.inputs)).toThrow(circuit.exceptions.InfiniteLoopError<boolean>);
   try {
     signalPropagator.propagate(inputBus.inputs);
     expect(true).toEqual(false);
   } catch (e) {
-    expect((e as InfiniteLoopError<boolean>).name).toEqual('InfiniteLoopError');
-    expect((e as InfiniteLoopError<boolean>).message).toEqual('Infinite loop detected');
-    expect((e as InfiniteLoopError<boolean>).connector).toBeInstanceOf(BaseConnector<boolean>);
+    expect((e as circuit.exceptions.InfiniteLoopError<boolean>).name).toEqual('InfiniteLoopError');
+    expect((e as circuit.exceptions.InfiniteLoopError<boolean>).message).toEqual('Infinite loop detected');
+    expect((e as circuit.exceptions.InfiniteLoopError<boolean>).connector).toBeInstanceOf(circuit.connectors.BaseConnector<boolean>);
 
     const allConnectors = new Set([...inputBus.inputs, ...inputBus.outputs, ...notElement.inputs, ...notElement.outputs, ...outputBus.inputs, ...outputBus.outputs]);
-    expect(allConnectors).toContain((e as InfiniteLoopError<boolean>).connector);
+    expect(allConnectors).toContain((e as circuit.exceptions.InfiniteLoopError<boolean>).connector);
   }
 });

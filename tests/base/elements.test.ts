@@ -1,15 +1,13 @@
-import { BusElement, CompositeElement } from "../../src/elements";
-import { NotElement } from "../../src/boolean/elements";
-import { ResetElementPropagator, SignalPropagator } from "../../src/propagators";
-import { ConnectionManager } from "../../src/helpers";
+import { expect, it } from '@jest/globals';
+import * as circuit from "../../src";
 
 it('Base Boolean Elements test', () => {
-  const connectionManager = new ConnectionManager<boolean>(false);
-  const signalPropagator = new SignalPropagator<boolean>();
+  const connectionManager = new circuit.helpers.ConnectionManager<boolean>(false);
+  const signalPropagator = new circuit.propagators.SignalPropagator<boolean>();
 
-  const inputBus = new BusElement<boolean>(1, false);
-  const notElement = new NotElement();
-  const outputBus = new BusElement<boolean>(1, false);
+  const inputBus = new circuit.elements.BusElement<boolean>(1, false);
+  const notElement = new circuit.boolean.elements.NotElement();
+  const outputBus = new circuit.elements.BusElement<boolean>(1, false);
 
   inputBus.init();
   notElement.init();
@@ -40,7 +38,7 @@ it('Base Boolean Elements test', () => {
   expect(outputBus.outputs[0].value).toEqual(true);
 
   {
-    const compositeElement = new CompositeElement<boolean>(inputBus, outputBus, signalPropagator, new ResetElementPropagator<boolean>());
+    const compositeElement = new circuit.elements.CompositeElement<boolean>(inputBus, outputBus, signalPropagator, new circuit.propagators.ResetElementPropagator<boolean>());
 
     expect(compositeElement.inputs[0].value).toEqual(false);
     expect(compositeElement.outputs[0].value).toEqual(true);
@@ -59,7 +57,7 @@ it('Base Boolean Elements test', () => {
   }
 
   {
-    const compositeElement = new CompositeElement<boolean>(inputBus, outputBus, signalPropagator, new ResetElementPropagator<boolean>());
+    const compositeElement = new circuit.elements.CompositeElement<boolean>(inputBus, outputBus, signalPropagator, new circuit.propagators.ResetElementPropagator<boolean>());
     compositeElement.propagate();
 
     expect(compositeElement.inputs[0].value).toEqual(false);

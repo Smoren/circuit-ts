@@ -7,7 +7,7 @@ import type {
 import { BusElement, CompositeElement } from "../elements";
 import { AndElement, NotElement, OrElement } from "./elements";
 
-export class BooleanCompositeElementFactory {
+export class CompositeElementFactory {
   private readonly _connectionManager: ConnectionManagerInterface<boolean>;
   private readonly _signalPropagator: SignalPropagatorInterface<boolean>;
   private readonly _resetElementPropagator: ResetElementPropagatorInterface<boolean>;

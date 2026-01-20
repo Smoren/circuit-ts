@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import { OrElement } from "../../src/boolean/elements";
+import * as circuit from "../../src";
 
 describe.each([
   ...dataProviderForOrElementStaticTest(),
@@ -7,7 +7,7 @@ describe.each([
   'OrElement Static Test',
   (inputValues: boolean[], expectedOutputValue: boolean) => {
     it('', () => {
-      const orElement = new OrElement(inputValues.length);
+      const orElement = new circuit.boolean.elements.OrElement(inputValues.length);
       const orElementOutput = orElement.outputs[0];
 
       expect(orElementOutput.value).toEqual(false);
@@ -29,7 +29,7 @@ describe.each([
   'OrElement Dynamic Test',
   (inputsCount: number, operations: [number, boolean, boolean][]) => {
     it('', () => {
-      const orElement = new OrElement(inputsCount);
+      const orElement = new circuit.boolean.elements.OrElement(inputsCount);
       const orElementOutput = orElement.outputs[0];
 
       expect(orElementOutput.value).toEqual(false);

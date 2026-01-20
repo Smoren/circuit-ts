@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import { NotElement } from "../../src/boolean/elements";
+import * as circuit from "../../src";
 
 describe.each([
   ...dataProviderForNotElementDynamicTest(),
@@ -7,7 +7,7 @@ describe.each([
   'NotElement Dynamic Test',
   (operations: [boolean, boolean][]) => {
     it('', () => {
-      const notElement = new NotElement();
+      const notElement = new circuit.boolean.elements.NotElement();
       const notElementOutput = notElement.outputs[0];
 
       expect(notElementOutput.value).toEqual(false);

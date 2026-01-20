@@ -1,7 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import { BooleanCompositeElementFactory } from "../../src/boolean/factories";
-import { ResetElementPropagator, SignalPropagator } from "../../src/propagators";
-import { ConnectionManager } from "../../src/helpers";
+import * as circuit from "../../src";
 
 describe.each([
   ...dataProviderForNotOrElementStaticTest(),
@@ -9,10 +7,10 @@ describe.each([
   'NotOrElement Static Test',
   (inputValues: boolean[], expectedOutputValue: boolean) => {
     it('', () => {
-      const connectionManager = new ConnectionManager<boolean>(false);
-      const signalPropagator = new SignalPropagator<boolean>();
-      const resetPropagator = new ResetElementPropagator<boolean>();
-      const factory = new BooleanCompositeElementFactory(connectionManager, signalPropagator, resetPropagator);
+      const connectionManager = new circuit.helpers.ConnectionManager<boolean>(false);
+      const signalPropagator = new circuit.propagators.SignalPropagator<boolean>();
+      const resetPropagator = new circuit.propagators.ResetElementPropagator<boolean>();
+      const factory = new circuit.boolean.factories.CompositeElementFactory(connectionManager, signalPropagator, resetPropagator);
 
       const notOrElement = factory.createNotOr(inputValues.length);
       const notOrElementOutput = notOrElement.outputs[0];
@@ -40,10 +38,10 @@ describe.each([
   'NotOrElement Dynamic Test',
   (inputsCount: number, operations: [number, boolean, boolean][]) => {
     it('', () => {
-      const connectionManager = new ConnectionManager<boolean>(false);
-      const signalPropagator = new SignalPropagator<boolean>();
-      const resetPropagator = new ResetElementPropagator<boolean>();
-      const factory = new BooleanCompositeElementFactory(connectionManager, signalPropagator, resetPropagator);
+      const connectionManager = new circuit.helpers.ConnectionManager<boolean>(false);
+      const signalPropagator = new circuit.propagators.SignalPropagator<boolean>();
+      const resetPropagator = new circuit.propagators.ResetElementPropagator<boolean>();
+      const factory = new circuit.boolean.factories.CompositeElementFactory(connectionManager, signalPropagator, resetPropagator);
 
       const notOrElement = factory.createNotOr(inputsCount);
       const notOrElementOutput = notOrElement.outputs[0];
