@@ -2,7 +2,7 @@ import { BusElement, CompositeElement, NotElement } from "../../src/elements";
 import { ResetElementPropagator, SignalPropagator } from "../../src/propagators";
 import { ConnectionManager } from "../../src/helpers";
 
-it('Base Elements test', () => {
+it('Base Boolean Elements test', () => {
   const connectionManager = new ConnectionManager<boolean>(false);
   const signalPropagator = new SignalPropagator<boolean>();
 
