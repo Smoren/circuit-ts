@@ -7,15 +7,12 @@ import {
   SignalPropagatorInterface,
 } from "./types";
 import { InputConnector, OutputConnector } from "./connectors";
-import { NAME_AND, NAME_NOT, NAME_OR } from "./constants";
 
 export abstract class BaseElement implements ElementInterface {
   readonly inputs: Array<InputConnectorInterface>;
   readonly outputs: Array<OutputConnectorInterface>;
-  protected _name: string;
 
-  protected constructor(name: string, inputsCount: number, outputsCount: number) {
-    this._name = name;
+  protected constructor(inputsCount: number, outputsCount: number) {
     this.inputs = InputConnector.createCollection(this, inputsCount);
     this.outputs = OutputConnector.createCollection(this, outputsCount);
   }
@@ -27,19 +24,11 @@ export abstract class BaseElement implements ElementInterface {
   public propagate(index?: number): Array<ConnectorInterface> {
     return this.outputs.filter((output) => output.dirty);
   }
-
-  set name(name: string) {
-    this._name = name;
-  }
-
-  get name(): string {
-    return this._name;
-  }
 }
 
 export class OrElement extends BaseElement {
   constructor(inputsCount: number) {
-    super(NAME_OR, inputsCount, 1);
+    super(inputsCount, 1);
   }
 
   public propagate(index?: number): Array<ConnectorInterface> {
@@ -50,7 +39,7 @@ export class OrElement extends BaseElement {
 
 export class AndElement extends BaseElement {
   constructor(inputsCount: number) {
-    super(NAME_AND, inputsCount, 1);
+    super(inputsCount, 1);
   }
 
   public propagate(index?: number): Array<ConnectorInterface> {
@@ -61,7 +50,7 @@ export class AndElement extends BaseElement {
 
 export class NotElement extends BaseElement {
   constructor() {
-    super(NAME_NOT, 1, 1);
+    super(1, 1);
   }
 
   public propagate(index?: number): Array<ConnectorInterface> {
@@ -71,8 +60,8 @@ export class NotElement extends BaseElement {
 }
 
 export class BusElement extends BaseElement {
-  constructor(name: string, inputsCount: number) {
-    super(name, inputsCount, inputsCount);
+  constructor(inputsCount: number) {
+    super(inputsCount, inputsCount);
   }
 
   public propagate(index?: number): Array<ConnectorInterface> {
@@ -95,19 +84,16 @@ export class BusElement extends BaseElement {
 export class CompositeElement implements ElementInterface {
   readonly inputs: Array<InputConnectorInterface>;
   readonly outputs: Array<OutputConnectorInterface>;
-  protected _name: string;
   private readonly _signalPropagator: SignalPropagatorInterface;
   private readonly _resetPropagator: ResetElementPropagatorInterface;
   private _isInited: boolean = false;
 
   constructor(
-    name: string,
     inputBus: BusElement,
     outputBus: BusElement,
     signalPropagator: SignalPropagatorInterface,
     resetPropagator: ResetElementPropagatorInterface,
   ) {
-    this._name = name;
     this.inputs = inputBus.inputs;
     this.outputs = outputBus.outputs;
     this._signalPropagator = signalPropagator;
@@ -132,14 +118,6 @@ export class CompositeElement implements ElementInterface {
     const inputs = index === undefined ? this.inputs : [this.inputs[index]];
     this._signalPropagator.propagate(inputs);
     return this._getDirtyOutputs();
-  }
-
-  set name(name: string) {
-    this._name = name;
-  }
-
-  get name(): string {
-    return this._name;
   }
 
   private _getDirtyOutputs(): Array<ConnectorInterface> {

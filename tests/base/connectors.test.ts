@@ -26,12 +26,6 @@ it('Base Connectors test', () => {
   expect(input.index).toEqual(0);
   expect(output.index).toEqual(0);
 
-  expect(input.name).toEqual(undefined);
-  expect(output.name).toEqual(undefined);
-
-  input.name = 'A';
-  expect(input.name).toEqual('A');
-
   expect(output.targets.length).toEqual(0);
 
   connectionManager.connect(output, input);
