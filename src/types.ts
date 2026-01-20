@@ -1,39 +1,39 @@
 export type ConnectorType = 'input' | 'output';
 
-export interface ConnectorInterface {
-  value: boolean;
+export interface ConnectorInterface<TValue> {
+  value: TValue;
   readonly type: ConnectorType;
   readonly dirty: boolean;
-  readonly element: ElementInterface;
+  readonly element: ElementInterface<TValue>;
   readonly index: number;
-  readonly targets: Array<InputConnectorInterface>;
-  propagate(): Array<ConnectorInterface>;
+  readonly targets: Array<InputConnectorInterface<TValue>>;
+  propagate(): Array<ConnectorInterface<TValue>>;
   makeDirty(): void;
 }
 
-export interface InputConnectorInterface extends ConnectorInterface {}
+export interface InputConnectorInterface<TValue> extends ConnectorInterface<TValue> {}
 
-export interface OutputConnectorInterface extends ConnectorInterface {
-  addTarget(connector: InputConnectorInterface): void;
-  removeTarget(connector: InputConnectorInterface): void;
+export interface OutputConnectorInterface<TValue> extends ConnectorInterface<TValue> {
+  addTarget(connector: InputConnectorInterface<TValue>): void;
+  removeTarget(connector: InputConnectorInterface<TValue>): void;
 }
 
-export interface ElementInterface {
-  readonly inputs: Array<InputConnectorInterface>;
-  readonly outputs: Array<OutputConnectorInterface>;
+export interface ElementInterface<TValue> {
+  readonly inputs: Array<InputConnectorInterface<TValue>>;
+  readonly outputs: Array<OutputConnectorInterface<TValue>>;
   init(): void;
-  propagate(index?: number): Array<ConnectorInterface>;
+  propagate(index?: number): Array<ConnectorInterface<TValue>>;
 }
 
-export interface SignalPropagatorInterface {
-  propagate(targets: ConnectorInterface[]): Set<ConnectorInterface>;
+export interface SignalPropagatorInterface<TValue> {
+  propagate(targets: ConnectorInterface<TValue>[]): Set<ConnectorInterface<TValue>>;
 }
 
-export interface ResetElementPropagatorInterface {
-  propagate(element: ElementInterface): void;
+export interface ResetElementPropagatorInterface<TValue> {
+  propagate(element: ElementInterface<TValue>): void;
 }
 
-export interface ConnectionManagerInterface {
-  connect(lhs: ConnectorInterface, rhs: ConnectorInterface): void;
-  disconnect(lhs: ConnectorInterface, rhs: ConnectorInterface): void;
+export interface ConnectionManagerInterface<TValue> {
+  connect(lhs: ConnectorInterface<TValue>, rhs: ConnectorInterface<TValue>): void;
+  disconnect(lhs: ConnectorInterface<TValue>, rhs: ConnectorInterface<TValue>): void;
 }

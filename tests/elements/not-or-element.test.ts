@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import { CompositeElementFactory } from "../../src/factories";
+import { BooleanCompositeElementFactory } from "../../src/factories";
 import { ResetElementPropagator, SignalPropagator } from "../../src/propagators";
 import { ConnectionManager } from "../../src/helpers";
 
@@ -9,10 +9,10 @@ describe.each([
   'NotOrElement Static Test',
   (inputValues: boolean[], expectedOutputValue: boolean) => {
     it('', () => {
-      const connectionManager = new ConnectionManager();
-      const signalPropagator = new SignalPropagator();
-      const resetPropagator = new ResetElementPropagator();
-      const factory = new CompositeElementFactory(connectionManager, signalPropagator, resetPropagator);
+      const connectionManager = new ConnectionManager<boolean>(false);
+      const signalPropagator = new SignalPropagator<boolean>();
+      const resetPropagator = new ResetElementPropagator<boolean>();
+      const factory = new BooleanCompositeElementFactory(connectionManager, signalPropagator, resetPropagator);
 
       const notOrElement = factory.createNotOr(inputValues.length);
       const notOrElementOutput = notOrElement.outputs[0];
@@ -40,10 +40,10 @@ describe.each([
   'NotOrElement Dynamic Test',
   (inputsCount: number, operations: [number, boolean, boolean][]) => {
     it('', () => {
-      const connectionManager = new ConnectionManager();
-      const signalPropagator = new SignalPropagator();
-      const resetPropagator = new ResetElementPropagator();
-      const factory = new CompositeElementFactory(connectionManager, signalPropagator, resetPropagator);
+      const connectionManager = new ConnectionManager<boolean>(false);
+      const signalPropagator = new SignalPropagator<boolean>();
+      const resetPropagator = new ResetElementPropagator<boolean>();
+      const factory = new BooleanCompositeElementFactory(connectionManager, signalPropagator, resetPropagator);
 
       const notOrElement = factory.createNotOr(inputsCount);
       const notOrElementOutput = notOrElement.outputs[0];

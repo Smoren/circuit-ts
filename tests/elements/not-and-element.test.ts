@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import { CompositeElementFactory } from "../../src/factories";
+import { BooleanCompositeElementFactory } from "../../src/factories";
 import { ResetElementPropagator, SignalPropagator } from "../../src/propagators";
 import { ConnectionManager } from "../../src/helpers";
 
@@ -9,10 +9,10 @@ describe.each([
   'NotAndElement Static Test',
   (inputValues: boolean[], expectedOutputValue: boolean) => {
     it('', () => {
-      const connectionManager = new ConnectionManager();
-      const signalPropagator = new SignalPropagator();
-      const resetPropagator = new ResetElementPropagator();
-      const factory = new CompositeElementFactory(connectionManager, signalPropagator, resetPropagator);
+      const connectionManager = new ConnectionManager<boolean>(false);
+      const signalPropagator = new SignalPropagator<boolean>();
+      const resetPropagator = new ResetElementPropagator<boolean>();
+      const factory = new BooleanCompositeElementFactory(connectionManager, signalPropagator, resetPropagator);
 
       const notAndElement = factory.createNotAnd(inputValues.length);
       const notAndElementOutput = notAndElement.outputs[0];
@@ -38,10 +38,10 @@ describe.each([
   'NotAndElement Dynamic Test',
   (inputsCount: number, operations: [number, boolean, boolean][]) => {
     it('', () => {
-      const connectionManager = new ConnectionManager();
-      const signalPropagator = new SignalPropagator();
-      const resetPropagator = new ResetElementPropagator();
-      const factory = new CompositeElementFactory(connectionManager, signalPropagator, resetPropagator);
+      const connectionManager = new ConnectionManager<boolean>(false);
+      const signalPropagator = new SignalPropagator<boolean>();
+      const resetPropagator = new ResetElementPropagator<boolean>();
+      const factory = new BooleanCompositeElementFactory(connectionManager, signalPropagator, resetPropagator);
 
       const notAndElement = factory.createNotAnd(inputsCount);
       const notAndElementOutput = notAndElement.outputs[0];

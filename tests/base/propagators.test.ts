@@ -6,12 +6,12 @@ import { BaseConnector } from "../../src/connectors";
 import { ConnectionManager } from "../../src/helpers";
 
 it('Base Signal Propagator test', () => {
-  const connectionManager = new ConnectionManager();
-  const signalPropagator = new SignalPropagator();
+  const connectionManager = new ConnectionManager<boolean>(false);
+  const signalPropagator = new SignalPropagator<boolean>();
 
-  const inputBus = new BusElement(1);
+  const inputBus = new BusElement<boolean>(1, false);
   const notElement = new NotElement();
-  const outputBus = new BusElement(1);
+  const outputBus = new BusElement<boolean>(1, false);
 
   inputBus.init();
   notElement.init();
@@ -30,16 +30,16 @@ it('Base Signal Propagator test', () => {
   connectionManager.connect(outputBus.outputs[0], inputBus.inputs[0]);
   expect(inputBus.inputs[0].value).toEqual(true);
 
-  expect(() => signalPropagator.propagate(inputBus.inputs)).toThrow(InfiniteLoopError);
+  expect(() => signalPropagator.propagate(inputBus.inputs)).toThrow(InfiniteLoopError<boolean>);
   try {
     signalPropagator.propagate(inputBus.inputs);
     expect(true).toEqual(false);
   } catch (e) {
-    expect((e as InfiniteLoopError).name).toEqual('InfiniteLoopError');
-    expect((e as InfiniteLoopError).message).toEqual('Infinite loop detected');
-    expect((e as InfiniteLoopError).connector).toBeInstanceOf(BaseConnector);
+    expect((e as InfiniteLoopError<boolean>).name).toEqual('InfiniteLoopError');
+    expect((e as InfiniteLoopError<boolean>).message).toEqual('Infinite loop detected');
+    expect((e as InfiniteLoopError<boolean>).connector).toBeInstanceOf(BaseConnector<boolean>);
 
     const allConnectors = new Set([...inputBus.inputs, ...inputBus.outputs, ...notElement.inputs, ...notElement.outputs, ...outputBus.inputs, ...outputBus.outputs]);
-    expect(allConnectors).toContain((e as InfiniteLoopError).connector);
+    expect(allConnectors).toContain((e as InfiniteLoopError<boolean>).connector);
   }
 });

@@ -1,18 +1,18 @@
 import { ConnectorInterface, ResetElementPropagatorInterface, ElementInterface, SignalPropagatorInterface } from "./types";
 import { InfiniteLoopError } from "./exceptions";
 
-export class SignalPropagator implements SignalPropagatorInterface {
+export class SignalPropagator<TValue> implements SignalPropagatorInterface<TValue> {
   private readonly _visitCounterLimit: number;
-  private readonly _visitedDirtyConnectors: Set<ConnectorInterface>;
-  private readonly _visitedCounters: Map<ConnectorInterface, number>;
+  private readonly _visitedDirtyConnectors: Set<ConnectorInterface<TValue>>;
+  private readonly _visitedCounters: Map<ConnectorInterface<TValue>, number>;
 
   constructor(visitCounterLimit: number = 100) {
     this._visitCounterLimit = visitCounterLimit;
-    this._visitedDirtyConnectors = new Set<ConnectorInterface>();
-    this._visitedCounters = new Map<ConnectorInterface, number>();
+    this._visitedDirtyConnectors = new Set<ConnectorInterface<TValue>>();
+    this._visitedCounters = new Map<ConnectorInterface<TValue>, number>();
   }
 
-  public propagate(targets: ConnectorInterface[]): Set<ConnectorInterface> {
+  public propagate(targets: ConnectorInterface<TValue>[]): Set<ConnectorInterface<TValue>> {
     this._visitedDirtyConnectors.clear();
     this._visitedCounters.clear();
 
@@ -35,7 +35,7 @@ export class SignalPropagator implements SignalPropagatorInterface {
     return this._visitedDirtyConnectors;
   }
 
-  private _handleTarget(target: ConnectorInterface): Array<ConnectorInterface> {
+  private _handleTarget(target: ConnectorInterface<TValue>): Array<ConnectorInterface<TValue>> {
     if (target.dirty) {
       const visitedCounter = this._visitedCounters.get(target) ?? 0;
       if (visitedCounter > this._visitCounterLimit) {
@@ -49,25 +49,25 @@ export class SignalPropagator implements SignalPropagatorInterface {
   }
 }
 
-export class ResetElementPropagator implements ResetElementPropagatorInterface {
-  private readonly _visitedDirtyConnectors: Set<ConnectorInterface>;
+export class ResetElementPropagator<TValue> implements ResetElementPropagatorInterface<TValue> {
+  private readonly _visitedDirtyConnectors: Set<ConnectorInterface<TValue>>;
 
   constructor() {
-    this._visitedDirtyConnectors = new Set<ConnectorInterface>();
+    this._visitedDirtyConnectors = new Set<ConnectorInterface<TValue>>();
   }
 
-  public propagate(element: ElementInterface): void {
+  public propagate(element: ElementInterface<TValue>): void {
     this._visitedDirtyConnectors.clear();
 
-    let targets: ConnectorInterface[] = element.inputs;
-    const stopConnectors: Set<ConnectorInterface> = new Set(element.outputs);
+    let targets: ConnectorInterface<TValue>[] = element.inputs;
+    const stopConnectors: Set<ConnectorInterface<TValue>> = new Set(element.outputs);
 
     while (targets.length > 0) {
       targets = targets.flatMap((target) => this._handleTarget(target, stopConnectors));
     }
   }
 
-  private _handleTarget(target: ConnectorInterface, stopConnectors: Set<ConnectorInterface>): Array<ConnectorInterface> {
+  private _handleTarget(target: ConnectorInterface<TValue>, stopConnectors: Set<ConnectorInterface<TValue>>): Array<ConnectorInterface<TValue>> {
     if (this._visitedDirtyConnectors.has(target)) {
       return [];
     }

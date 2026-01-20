@@ -6,24 +6,24 @@ import type {
 } from "./types";
 import { AndElement, BusElement, CompositeElement, NotElement, OrElement } from "./elements";
 
-export class CompositeElementFactory {
-  private readonly _connectionManager: ConnectionManagerInterface;
-  private readonly _signalPropagator: SignalPropagatorInterface;
-  private readonly _resetElementPropagator: ResetElementPropagatorInterface;
+export class BooleanCompositeElementFactory {
+  private readonly _connectionManager: ConnectionManagerInterface<boolean>;
+  private readonly _signalPropagator: SignalPropagatorInterface<boolean>;
+  private readonly _resetElementPropagator: ResetElementPropagatorInterface<boolean>;
 
   constructor(
-    connectionManager: ConnectionManagerInterface,
-    signalPropagator: SignalPropagatorInterface,
-    resetElementPropagator: ResetElementPropagatorInterface,
+    connectionManager: ConnectionManagerInterface<boolean>,
+    signalPropagator: SignalPropagatorInterface<boolean>,
+    resetElementPropagator: ResetElementPropagatorInterface<boolean>,
   ) {
     this._connectionManager = connectionManager;
     this._signalPropagator = signalPropagator;
     this._resetElementPropagator = resetElementPropagator;
   }
 
-  public createNotOr(inputsCount: number): ElementInterface {
-    const inputBus = new BusElement(inputsCount);
-    const outputBus = new BusElement(1);
+  public createNotOr(inputsCount: number): ElementInterface<boolean> {
+    const inputBus = new BusElement(inputsCount, false);
+    const outputBus = new BusElement(1, false);
 
     const orElement = new OrElement(inputsCount);
     const notElement = new NotElement();
@@ -35,12 +35,12 @@ export class CompositeElementFactory {
     this._connectionManager.connect(orElement.outputs[0], notElement.inputs[0]);
     this._connectionManager.connect(notElement.outputs[0], outputBus.inputs[0]);
 
-    return new CompositeElement(inputBus, outputBus, this._signalPropagator, this._resetElementPropagator);
+    return new CompositeElement<boolean>(inputBus, outputBus, this._signalPropagator, this._resetElementPropagator);
   }
 
-  public createNotAnd(inputsCount: number): ElementInterface {
-    const inputBus = new BusElement(inputsCount);
-    const outputBus = new BusElement(1);
+  public createNotAnd(inputsCount: number): ElementInterface<boolean> {
+    const inputBus = new BusElement<boolean>(inputsCount, false);
+    const outputBus = new BusElement<boolean>(1, false);
 
     const andElement = new AndElement(inputsCount);
     const notElement = new NotElement();
@@ -55,9 +55,9 @@ export class CompositeElementFactory {
     return new CompositeElement(inputBus, outputBus, this._signalPropagator, this._resetElementPropagator);
   }
 
-  public createRsTriggerNotOrBased(): ElementInterface {
-    const inputBus = new BusElement(2);
-    const outputBus = new BusElement(2);
+  public createRsTriggerNotOrBased(): ElementInterface<boolean> {
+    const inputBus = new BusElement<boolean>(2, false);
+    const outputBus = new BusElement<boolean>(2, false);
 
     const notOr1 = this.createNotOr(2);
     const notOr2 = this.createNotOr(2);

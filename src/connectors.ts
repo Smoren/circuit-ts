@@ -6,31 +6,31 @@ import type {
   OutputConnectorInterface,
 } from "./types";
 
-export abstract class BaseConnector implements ConnectorInterface {
-  protected _value: boolean;
+export abstract class BaseConnector<TValue> implements ConnectorInterface<TValue> {
+  protected _value: TValue;
   protected _dirty: boolean;
-  protected readonly _element: ElementInterface;
+  protected readonly _element: ElementInterface<TValue>;
   protected readonly _index: number;
 
-  protected constructor(element: ElementInterface, index: number) {
-    this._value = false;
+  protected constructor(element: ElementInterface<TValue>, index: number, value: TValue) {
+    this._value = value;
     this._dirty = true;
     this._element = element;
     this._index = index;
   }
 
-  public abstract propagate(): Array<ConnectorInterface>;
+  public abstract propagate(): Array<ConnectorInterface<TValue>>;
 
   abstract get type(): ConnectorType;
 
-  abstract get targets(): Array<InputConnectorInterface>;
+  abstract get targets(): Array<InputConnectorInterface<TValue>>;
 
-  set value(value: boolean) {
+  set value(value: TValue) {
     this._dirty ||= this._value !== value;
     this._value = value;
   }
 
-  get value(): boolean {
+  get value(): TValue {
     return this._value;
   }
 
@@ -38,7 +38,7 @@ export abstract class BaseConnector implements ConnectorInterface {
     return this._dirty;
   }
 
-  get element(): ElementInterface {
+  get element(): ElementInterface<TValue> {
     return this._element;
   }
 
@@ -51,22 +51,22 @@ export abstract class BaseConnector implements ConnectorInterface {
   }
 }
 
-export class InputConnector extends BaseConnector implements InputConnectorInterface {
+export class InputConnector<TValue> extends BaseConnector<TValue> implements InputConnectorInterface<TValue> {
   readonly type: ConnectorType = 'input';
 
-  constructor(element: ElementInterface, index: number) {
-    super(element, index);
+  constructor(element: ElementInterface<TValue>, index: number, value: TValue) {
+    super(element, index, value);
   }
 
-  public static createCollection(element: ElementInterface, size: number): Array<InputConnectorInterface> {
-    return Array.from({ length: size }, (_, i) => new InputConnector(element, i));
+  public static createCollection<TValue>(element: ElementInterface<TValue>, size: number, defaultValue: TValue): Array<InputConnectorInterface<TValue>> {
+    return Array.from({ length: size }, (_, i) => new InputConnector<TValue>(element, i, defaultValue));
   }
 
-  get targets(): Array<InputConnectorInterface> {
+  get targets(): Array<InputConnectorInterface<TValue>> {
     return [...this._element.outputs];
   }
 
-  public propagate(): Array<ConnectorInterface> {
+  public propagate(): Array<ConnectorInterface<TValue>> {
     if (!this._dirty) {
       return [];
     }
@@ -75,24 +75,24 @@ export class InputConnector extends BaseConnector implements InputConnectorInter
   }
 }
 
-export class OutputConnector extends BaseConnector implements OutputConnectorInterface {
+export class OutputConnector<TValue> extends BaseConnector<TValue> implements OutputConnectorInterface<TValue> {
   readonly type: ConnectorType = 'output';
-  private readonly _targets: Set<InputConnectorInterface>;
+  private readonly _targets: Set<InputConnectorInterface<TValue>>;
 
-  constructor(element: ElementInterface, index: number) {
-    super(element, index);
+  constructor(element: ElementInterface<TValue>, index: number, value: TValue) {
+    super(element, index, value);
     this._targets = new Set();
   }
 
-  public static createCollection(element: ElementInterface, size: number): Array<OutputConnectorInterface> {
-    return Array.from({ length: size }, (_, i) => new OutputConnector(element, i));
+  public static createCollection<TValue>(element: ElementInterface<TValue>, size: number, defaultValue: TValue): Array<OutputConnectorInterface<TValue>> {
+    return Array.from({ length: size }, (_, i) => new OutputConnector<TValue>(element, i, defaultValue));
   }
 
-  get targets(): Array<InputConnectorInterface> {
+  get targets(): Array<InputConnectorInterface<TValue>> {
     return [...this._targets];
   }
 
-  public propagate(): Array<ConnectorInterface> {
+  public propagate(): Array<ConnectorInterface<TValue>> {
     if (!this._dirty) {
       return [];
     }
@@ -109,11 +109,11 @@ export class OutputConnector extends BaseConnector implements OutputConnectorInt
     return result;
   }
 
-  public addTarget(target: InputConnectorInterface): void {
+  public addTarget(target: InputConnectorInterface<TValue>): void {
     this._targets.add(target);
   }
 
-  public removeTarget(target: InputConnectorInterface): void {
+  public removeTarget(target: InputConnectorInterface<TValue>): void {
     this._targets.delete(target);
   }
 }

@@ -8,63 +8,30 @@ import {
 } from "./types";
 import { InputConnector, OutputConnector } from "./connectors";
 
-export abstract class BaseElement implements ElementInterface {
-  readonly inputs: Array<InputConnectorInterface>;
-  readonly outputs: Array<OutputConnectorInterface>;
+export abstract class BaseElement<TValue> implements ElementInterface<TValue> {
+  readonly inputs: Array<InputConnectorInterface<TValue>>;
+  readonly outputs: Array<OutputConnectorInterface<TValue>>;
 
-  protected constructor(inputsCount: number, outputsCount: number) {
-    this.inputs = InputConnector.createCollection(this, inputsCount);
-    this.outputs = OutputConnector.createCollection(this, outputsCount);
+  protected constructor(inputsCount: number, outputsCount: number, defaultValue: TValue) {
+    this.inputs = InputConnector.createCollection<TValue>(this, inputsCount, defaultValue);
+    this.outputs = OutputConnector.createCollection<TValue>(this, outputsCount, defaultValue);
   }
 
   public init(): void {
     this.propagate();
   }
 
-  public propagate(index?: number): Array<ConnectorInterface> {
+  public propagate(index?: number): Array<ConnectorInterface<TValue>> {
     return this.outputs.filter((output) => output.dirty);
   }
 }
 
-export class OrElement extends BaseElement {
-  constructor(inputsCount: number) {
-    super(inputsCount, 1);
+export class BusElement<TValue> extends BaseElement<TValue> {
+  constructor(inputsCount: number, defaultValue: TValue) {
+    super(inputsCount, inputsCount, defaultValue);
   }
 
-  public propagate(index?: number): Array<ConnectorInterface> {
-    this.outputs[0].value = this.inputs.some((input) => input.value);
-    return super.propagate();
-  }
-}
-
-export class AndElement extends BaseElement {
-  constructor(inputsCount: number) {
-    super(inputsCount, 1);
-  }
-
-  public propagate(index?: number): Array<ConnectorInterface> {
-    this.outputs[0].value = this.inputs.every((input) => input.value);
-    return super.propagate(index);
-  }
-}
-
-export class NotElement extends BaseElement {
-  constructor() {
-    super(1, 1);
-  }
-
-  public propagate(index?: number): Array<ConnectorInterface> {
-    this.outputs[0].value = !this.inputs[0].value;
-    return super.propagate(index);
-  }
-}
-
-export class BusElement extends BaseElement {
-  constructor(inputsCount: number) {
-    super(inputsCount, inputsCount);
-  }
-
-  public propagate(index?: number): Array<ConnectorInterface> {
+  public propagate(index?: number): Array<ConnectorInterface<TValue>> {
     if (index === undefined) {
       this._sendAll();
       return super.propagate(index);
@@ -74,25 +41,58 @@ export class BusElement extends BaseElement {
     return [this.outputs[index]];
   }
 
-  private _sendAll() {
+  private _sendAll(): void {
     for (let i=0; i<this.inputs.length; ++i) {
       this.outputs[i].value = this.inputs[i].value;
     }
   }
 }
 
-export class CompositeElement implements ElementInterface {
-  readonly inputs: Array<InputConnectorInterface>;
-  readonly outputs: Array<OutputConnectorInterface>;
-  private readonly _signalPropagator: SignalPropagatorInterface;
-  private readonly _resetPropagator: ResetElementPropagatorInterface;
+export class OrElement extends BaseElement<boolean> {
+  constructor(inputsCount: number) {
+    super(inputsCount, 1, false);
+  }
+
+  public propagate(index?: number): Array<ConnectorInterface<boolean>> {
+    this.outputs[0].value = this.inputs.some((input) => input.value);
+    return super.propagate();
+  }
+}
+
+export class AndElement extends BaseElement<boolean> {
+  constructor(inputsCount: number) {
+    super(inputsCount, 1, false);
+  }
+
+  public propagate(index?: number): Array<ConnectorInterface<boolean>> {
+    this.outputs[0].value = this.inputs.every((input) => input.value);
+    return super.propagate(index);
+  }
+}
+
+export class NotElement extends BaseElement<boolean> {
+  constructor() {
+    super(1, 1, false);
+  }
+
+  public propagate(index?: number): Array<ConnectorInterface<boolean>> {
+    this.outputs[0].value = !this.inputs[0].value;
+    return super.propagate(index);
+  }
+}
+
+export class CompositeElement<TValue> implements ElementInterface<TValue> {
+  readonly inputs: Array<InputConnectorInterface<TValue>>;
+  readonly outputs: Array<OutputConnectorInterface<TValue>>;
+  private readonly _signalPropagator: SignalPropagatorInterface<TValue>;
+  private readonly _resetPropagator: ResetElementPropagatorInterface<TValue>;
   private _isInited: boolean = false;
 
   constructor(
-    inputBus: BusElement,
-    outputBus: BusElement,
-    signalPropagator: SignalPropagatorInterface,
-    resetPropagator: ResetElementPropagatorInterface,
+    inputBus: BusElement<TValue>,
+    outputBus: BusElement<TValue>,
+    signalPropagator: SignalPropagatorInterface<TValue>,
+    resetPropagator: ResetElementPropagatorInterface<TValue>,
   ) {
     this.inputs = inputBus.inputs;
     this.outputs = outputBus.outputs;
@@ -107,7 +107,7 @@ export class CompositeElement implements ElementInterface {
     this.propagate();
   }
 
-  public propagate(index?: number): Array<ConnectorInterface> {
+  public propagate(index?: number): Array<ConnectorInterface<TValue>> {
     // TODO возможно принимать пропагатор на вход, добавлять в него инпуты как дополнительные таргеты (их придется хранить в атрибуте пропагатора).
     // а возможно и не нужно собирать вложенные выходы, потому что они будут скрыты подкат, а при открытии детализации автоматом обновлять все на экране.
     if (!this._isInited) {
@@ -120,7 +120,7 @@ export class CompositeElement implements ElementInterface {
     return this._getDirtyOutputs();
   }
 
-  private _getDirtyOutputs(): Array<ConnectorInterface> {
+  private _getDirtyOutputs(): Array<ConnectorInterface<TValue>> {
     return this.outputs.filter((output) => output.dirty);
   }
 }
