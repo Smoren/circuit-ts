@@ -7,7 +7,7 @@ describe.each([
   'AndElement Static Test',
   (inputValues: boolean[], expectedOutputValue: boolean) => {
     it('', () => {
-      const andElement = new circuit.boolean.elements.AndElement(inputValues.length);
+      const andElement = circuit.boolean.factories.createAndElement(inputValues.length);
       const andElementOutput = andElement.outputs[0];
 
       expect(andElementOutput.value).toEqual(false);
@@ -29,7 +29,7 @@ describe.each([
   'OrElement Dynamic Test',
   (inputsCount: number, operations: [number, boolean, boolean][]) => {
     it('', () => {
-      const andElement = new circuit.boolean.elements.AndElement(inputsCount);
+      const andElement = circuit.boolean.factories.createAndElement(inputsCount);
       const andElementOutput = andElement.outputs[0];
 
       expect(andElementOutput.value).toEqual(false);

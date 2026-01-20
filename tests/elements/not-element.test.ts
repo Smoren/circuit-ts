@@ -7,7 +7,7 @@ describe.each([
   'NotElement Dynamic Test',
   (operations: [boolean, boolean][]) => {
     it('', () => {
-      const notElement = new circuit.boolean.elements.NotElement();
+      const notElement = circuit.boolean.factories.createNotElement();
       const notElementOutput = notElement.outputs[0];
 
       expect(notElementOutput.value).toEqual(false);

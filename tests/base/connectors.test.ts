@@ -2,10 +2,10 @@ import { expect, it } from '@jest/globals';
 import * as circuit from "../../src";
 
 it('Base Connectors test', () => {
-  const connectionManager = new circuit.helpers.ConnectionManager<boolean>(false);
+  const connectionManager = circuit.boolean.factories.createConnectionManager();
 
-  const notElement1 = new circuit.boolean.elements.NotElement();
-  const notElement2 = new circuit.boolean.elements.NotElement();
+  const notElement1 = circuit.boolean.factories.createNotElement();
+  const notElement2 = circuit.boolean.factories.createNotElement();
 
   notElement1.init();
   notElement2.init();
@@ -29,11 +29,11 @@ it('Base Connectors test', () => {
 });
 
 it('Base Connector Exceptions test', () => {
-  const connectionManager = new circuit.helpers.ConnectionManager<boolean>(false);
+  const connectionManager = circuit.boolean.factories.createConnectionManager();
 
-  const notElement1 = new circuit.boolean.elements.NotElement();
-  const notElement2 = new circuit.boolean.elements.NotElement();
-  const notElement3 = new circuit.boolean.elements.NotElement();
+  const notElement1 = circuit.boolean.factories.createNotElement();
+  const notElement2 = circuit.boolean.factories.createNotElement();
+  const notElement3 = circuit.boolean.factories.createNotElement();
 
   notElement1.init();
   notElement2.init();

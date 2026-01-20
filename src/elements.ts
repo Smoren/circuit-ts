@@ -27,8 +27,8 @@ export abstract class BaseElement<TValue> implements ElementInterface<TValue> {
 }
 
 export class BusElement<TValue> extends BaseElement<TValue> {
-  constructor(inputsCount: number, defaultValue: TValue) {
-    super(inputsCount, inputsCount, defaultValue);
+  constructor(channelsCount: number, defaultValue: TValue) {
+    super(channelsCount, channelsCount, defaultValue);
   }
 
   public propagate(index?: number): Array<ConnectorInterface<TValue>> {

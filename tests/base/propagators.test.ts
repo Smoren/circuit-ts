@@ -2,12 +2,12 @@ import { expect, it } from '@jest/globals';
 import * as circuit from "../../src";
 
 it('Base Signal Propagator test', () => {
-  const connectionManager = new circuit.helpers.ConnectionManager<boolean>(false);
-  const signalPropagator = new circuit.propagators.SignalPropagator<boolean>();
+  const connectionManager = circuit.boolean.factories.createConnectionManager();
+  const signalPropagator = circuit.boolean.factories.createSignalPropagator();
 
-  const inputBus = new circuit.elements.BusElement<boolean>(1, false);
-  const notElement = new circuit.boolean.elements.NotElement();
-  const outputBus = new circuit.elements.BusElement<boolean>(1, false);
+  const inputBus = circuit.boolean.factories.createBusElement(1);
+  const notElement = circuit.boolean.factories.createNotElement();
+  const outputBus = circuit.boolean.factories.createBusElement(1);
 
   inputBus.init();
   notElement.init();

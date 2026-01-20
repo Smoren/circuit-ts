@@ -7,9 +7,9 @@ describe.each([
   'NotAndElement Static Test',
   (inputValues: boolean[], expectedOutputValue: boolean) => {
     it('', () => {
-      const connectionManager = new circuit.helpers.ConnectionManager<boolean>(false);
-      const signalPropagator = new circuit.propagators.SignalPropagator<boolean>();
-      const resetPropagator = new circuit.propagators.ResetElementPropagator<boolean>();
+      const connectionManager = circuit.boolean.factories.createConnectionManager();
+      const signalPropagator = circuit.boolean.factories.createSignalPropagator();
+      const resetPropagator = circuit.boolean.factories.createResetElementPropagator();
       const factory = new circuit.boolean.factories.CompositeElementFactory(connectionManager, signalPropagator, resetPropagator);
 
       const notAndElement = factory.createNotAnd(inputValues.length);
@@ -36,9 +36,9 @@ describe.each([
   'NotAndElement Dynamic Test',
   (inputsCount: number, operations: [number, boolean, boolean][]) => {
     it('', () => {
-      const connectionManager = new circuit.helpers.ConnectionManager<boolean>(false);
-      const signalPropagator = new circuit.propagators.SignalPropagator<boolean>();
-      const resetPropagator = new circuit.propagators.ResetElementPropagator<boolean>();
+      const connectionManager = circuit.boolean.factories.createConnectionManager();
+      const signalPropagator = circuit.boolean.factories.createSignalPropagator();
+      const resetPropagator = circuit.boolean.factories.createResetElementPropagator();
       const factory = new circuit.boolean.factories.CompositeElementFactory(connectionManager, signalPropagator, resetPropagator);
 
       const notAndElement = factory.createNotAnd(inputsCount);
