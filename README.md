@@ -1,4 +1,4 @@
-# circuit-ts
+# Circuit Constructor Library
 
 [![npm](https://img.shields.io/npm/v/circuit-ts.svg)](https://www.npmjs.com/package/circuit-ts)
 [![npm](https://img.shields.io/npm/dm/circuit-ts.svg?style=flat)](https://www.npmjs.com/package/circuit-ts)
