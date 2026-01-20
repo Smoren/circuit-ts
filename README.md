@@ -1,5 +1,12 @@
 # circuit-ts
 
+[![npm](https://img.shields.io/npm/v/circuit-ts.svg)](https://www.npmjs.com/package/circuit-ts)
+[![npm](https://img.shields.io/npm/dm/circuit-ts.svg?style=flat)](https://www.npmjs.com/package/circuit-ts)
+[![Coverage Status](https://coveralls.io/repos/github/Smoren/circuit-ts/badge.svg?branch=master&rand=222)](https://coveralls.io/github/Smoren/circuit-ts?branch=master)
+![Build and test](https://github.com/Smoren/circuit-ts/actions/workflows/test.yml/badge.svg)
+[![Minified Size](https://badgen.net/bundlephobia/minzip/circuit-ts)](https://bundlephobia.com/result?p=circuit-ts)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A TypeScript library for simulating logic circuits. Build complex digital systems from basic logic gates, 
 manage signal propagation, and create reusable composite elements.
 
