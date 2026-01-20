@@ -3,8 +3,9 @@ import type {
   ElementInterface,
   ResetElementPropagatorInterface,
   SignalPropagatorInterface,
-} from "./types";
-import { AndElement, BusElement, CompositeElement, NotElement, OrElement } from "./elements";
+} from "../types";
+import { BusElement, CompositeElement } from "../elements";
+import { AndElement, NotElement, OrElement } from "./elements";
 
 export class BooleanCompositeElementFactory {
   private readonly _connectionManager: ConnectionManagerInterface<boolean>;

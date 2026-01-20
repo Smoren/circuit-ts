@@ -1,4 +1,5 @@
-import { BusElement, CompositeElement, NotElement } from "../../src/elements";
+import { BusElement, CompositeElement } from "../../src/elements";
+import { NotElement } from "../../src/boolean/elements";
 import { ResetElementPropagator, SignalPropagator } from "../../src/propagators";
 import { ConnectionManager } from "../../src/helpers";
 

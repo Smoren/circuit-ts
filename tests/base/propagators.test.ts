@@ -1,5 +1,6 @@
 import { expect, it } from '@jest/globals';
-import { BusElement, NotElement } from "../../src/elements";
+import { BusElement } from "../../src/elements";
+import { NotElement } from "../../src/boolean/elements";
 import { SignalPropagator } from "../../src/propagators";
 import { InfiniteLoopError } from "../../src/exceptions";
 import { BaseConnector } from "../../src/connectors";

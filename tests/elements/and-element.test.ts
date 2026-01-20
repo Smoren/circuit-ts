@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import { AndElement } from "../../src/elements";
+import { AndElement } from "../../src/boolean/elements";
 
 describe.each([
   ...dataProviderForAndElementStaticTest(),

@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import { BooleanCompositeElementFactory } from "../../src/factories";
+import { BooleanCompositeElementFactory } from "../../src/boolean/factories";
 import { ResetElementPropagator, SignalPropagator } from "../../src/propagators";
 import { ConnectionManager } from "../../src/helpers";
 
