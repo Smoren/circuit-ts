@@ -3,6 +3,27 @@
  */
 export type PortType = 'input' | 'output';
 
+export type IdType = string | number;
+
+export type ConnectionData = {
+  lhsId: IdType;
+  rhsId: IdType;
+}
+
+export type PortData = {
+  id: IdType;
+  elementId: IdType;
+  index: number;
+  name?: string;
+  inverted: boolean;
+}
+
+export type ElementData = {
+  id: IdType;
+  name: string;
+  symbol: string;
+}
+
 /**
  * Base interface for all ports (ports) of an element.
  * Ports are used to link elements and propagate values.
