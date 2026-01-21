@@ -1,26 +1,26 @@
 import {
   ConnectionManagerInterface,
-  ConnectorInterface,
-  InputConnectorInterface,
-  OutputConnectorInterface,
+  PortInterface,
+  InputPortInterface,
+  OutputPortInterface,
 } from "./types";
 import {
   ConnectionNotExistError,
   DuplicateConnectionError,
   InputAlreadyConnectedError,
-  InvalidConnectorsPairError,
+  InvalidPortsPairError,
 } from "./exceptions";
 
 /**
- * Helper class for managing connections between connectors.
+ * Helper class for managing connections between ports.
  * Ensures that connections are valid and prevents duplicate connections.
  */
 export class ConnectionManager<TValue> implements ConnectionManagerInterface<TValue> {
   private readonly _defaultValue: TValue;
-  private _connectionMap: Map<InputConnectorInterface<TValue>, OutputConnectorInterface<TValue>>;
+  private _connectionMap: Map<InputPortInterface<TValue>, OutputPortInterface<TValue>>;
 
   /**
-   * @param defaultValue - The value to set on an input connector when it is disconnected.
+   * @param defaultValue - The value to set on an input port when it is disconnected.
    */
   constructor(defaultValue: TValue) {
     this._defaultValue = defaultValue;
@@ -28,62 +28,62 @@ export class ConnectionManager<TValue> implements ConnectionManagerInterface<TVa
   }
 
   /**
-   * Connects an output connector to an input connector.
-   * @param lhs - First connector (input or output).
-   * @param rhs - Second connector (output or input).
+   * Connects an output port to an input port.
+   * @param lhs - First port (input or output).
+   * @param rhs - Second port (output or input).
    * @throws {DuplicateConnectionError} If the connection already exists.
-   * @throws {InputAlreadyConnectedError} If the input connector is already connected to another output.
-   * @throws {InvalidConnectorsPairError} If both connectors are of the same type.
+   * @throws {InputAlreadyConnectedError} If the input port is already connected to another output.
+   * @throws {InvalidPortsPairError} If both ports are of the same type.
    */
-  public connect(lhs: ConnectorInterface<TValue>, rhs: ConnectorInterface<TValue>): void {
-    const [outputConnector, inputConnector] = this.getOrderedPair(lhs, rhs);
-    if (this._connectionMap.has(inputConnector)) {
-      if (this._connectionMap.get(inputConnector) === outputConnector) {
-        throw new DuplicateConnectionError<TValue>(inputConnector, outputConnector);
+  public connect(lhs: PortInterface<TValue>, rhs: PortInterface<TValue>): void {
+    const [outputPort, inputPort] = this.getOrderedPair(lhs, rhs);
+    if (this._connectionMap.has(inputPort)) {
+      if (this._connectionMap.get(inputPort) === outputPort) {
+        throw new DuplicateConnectionError<TValue>(inputPort, outputPort);
       }
-      throw new InputAlreadyConnectedError<TValue>(inputConnector);
+      throw new InputAlreadyConnectedError<TValue>(inputPort);
     }
 
-    outputConnector.addTarget(inputConnector);
-    inputConnector.value = outputConnector.value;
+    outputPort.addTarget(inputPort);
+    inputPort.value = outputPort.value;
 
-    this._connectionMap.set(inputConnector, outputConnector);
+    this._connectionMap.set(inputPort, outputPort);
   }
 
   /**
-   * Disconnects an output connector from an input connector.
-   * @param lhs - First connector.
-   * @param rhs - Second connector.
+   * Disconnects an output port from an input port.
+   * @param lhs - First port.
+   * @param rhs - Second port.
    * @throws {ConnectionNotExistError} If the connection does not exist.
-   * @throws {InvalidConnectorsPairError} If both connectors are of the same type.
+   * @throws {InvalidPortsPairError} If both ports are of the same type.
    */
-  public disconnect(lhs: ConnectorInterface<TValue>, rhs: ConnectorInterface<TValue>): void {
-    const [outputConnector, inputConnector] = this.getOrderedPair(lhs, rhs);
+  public disconnect(lhs: PortInterface<TValue>, rhs: PortInterface<TValue>): void {
+    const [outputPort, inputPort] = this.getOrderedPair(lhs, rhs);
 
-    if (!this._connectionMap.has(inputConnector)) {
-      throw new ConnectionNotExistError<TValue>(inputConnector, outputConnector);
+    if (!this._connectionMap.has(inputPort)) {
+      throw new ConnectionNotExistError<TValue>(inputPort, outputPort);
     }
 
-    outputConnector.removeTarget(inputConnector);
-    inputConnector.value = this._defaultValue;
+    outputPort.removeTarget(inputPort);
+    inputPort.value = this._defaultValue;
 
-    this._connectionMap.delete(inputConnector);
+    this._connectionMap.delete(inputPort);
   }
 
   /**
-   * Helper method to identify which connector is output and which is input.
-   * @param lhs - First connector.
-   * @param rhs - Second connector.
+   * Helper method to identify which port is output and which is input.
+   * @param lhs - First port.
+   * @param rhs - Second port.
    * @returns A tuple of [Output, Input].
-   * @throws {InvalidConnectorsPairError} If the pair is invalid (e.g., both are inputs).
+   * @throws {InvalidPortsPairError} If the pair is invalid (e.g., both are inputs).
    */
-  private getOrderedPair(lhs: ConnectorInterface<TValue>, rhs: ConnectorInterface<TValue>): [OutputConnectorInterface<TValue>, InputConnectorInterface<TValue>] {
+  private getOrderedPair(lhs: PortInterface<TValue>, rhs: PortInterface<TValue>): [OutputPortInterface<TValue>, InputPortInterface<TValue>] {
     if (lhs.type === 'output' && rhs.type === 'input') {
-      return [lhs as OutputConnectorInterface<TValue>, rhs as InputConnectorInterface<TValue>];
+      return [lhs as OutputPortInterface<TValue>, rhs as InputPortInterface<TValue>];
     }
     if (lhs.type === 'input' && rhs.type === 'output') {
-      return [rhs as OutputConnectorInterface<TValue>, lhs as InputConnectorInterface<TValue>];
+      return [rhs as OutputPortInterface<TValue>, lhs as InputPortInterface<TValue>];
     }
-    throw new InvalidConnectorsPairError<TValue>(lhs, rhs);
+    throw new InvalidPortsPairError<TValue>(lhs, rhs);
   }
 }

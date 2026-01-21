@@ -1,4 +1,4 @@
-import * as connectors from './connectors';
+import * as ports from './ports';
 import * as exceptions from './exceptions';
 import * as helpers from './helpers';
 import * as propagators from './propagators';
@@ -6,7 +6,7 @@ import * as elements from './elements';
 import * as boolean from './boolean';
 
 export {
-  connectors,
+  ports,
   elements,
   helpers,
   exceptions,
@@ -15,10 +15,10 @@ export {
 };
 
 export type {
-  ConnectorType,
-  ConnectorInterface,
-  InputConnectorInterface,
-  OutputConnectorInterface,
+  PortType,
+  PortInterface,
+  InputPortInterface,
+  OutputPortInterface,
   ElementInterface,
   SignalPropagatorInterface,
   ResetElementPropagatorInterface,

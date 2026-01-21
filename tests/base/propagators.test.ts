@@ -33,9 +33,9 @@ it('Base Signal Propagator test', () => {
   } catch (e) {
     expect((e as circuit.exceptions.InfiniteLoopError<boolean>).name).toEqual('InfiniteLoopError');
     expect((e as circuit.exceptions.InfiniteLoopError<boolean>).message).toEqual('Infinite loop detected');
-    expect((e as circuit.exceptions.InfiniteLoopError<boolean>).connector).toBeInstanceOf(circuit.connectors.BaseConnector<boolean>);
+    expect((e as circuit.exceptions.InfiniteLoopError<boolean>).port).toBeInstanceOf(circuit.ports.BasePort<boolean>);
 
-    const allConnectors = new Set([...inputBus.inputs, ...inputBus.outputs, ...notElement.inputs, ...notElement.outputs, ...outputBus.inputs, ...outputBus.outputs]);
-    expect(allConnectors).toContain((e as circuit.exceptions.InfiniteLoopError<boolean>).connector);
+    const allPorts = new Set([...inputBus.inputs, ...inputBus.outputs, ...notElement.inputs, ...notElement.outputs, ...outputBus.inputs, ...outputBus.outputs]);
+    expect(allPorts).toContain((e as circuit.exceptions.InfiniteLoopError<boolean>).port);
   }
 });

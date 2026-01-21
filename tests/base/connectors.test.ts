@@ -1,7 +1,7 @@
 import { expect, it } from '@jest/globals';
 import * as circuit from "../../src";
 
-it('Base Connectors test', () => {
+it('Base Ports test', () => {
   const connectionManager = circuit.boolean.factories.createConnectionManager();
 
   const notElement1 = circuit.boolean.factories.createNotElement();
@@ -28,7 +28,7 @@ it('Base Connectors test', () => {
   expect(output.targets.length).toEqual(0);
 });
 
-it('Base Connector Exceptions test', () => {
+it('Base Port Exceptions test', () => {
   const connectionManager = circuit.boolean.factories.createConnectionManager();
 
   const notElement1 = circuit.boolean.factories.createNotElement();
@@ -47,8 +47,8 @@ it('Base Connector Exceptions test', () => {
     expect(true).toEqual(false);
   } catch (e) {
     expect((e as circuit.exceptions.DuplicateConnectionError<boolean>).name).toEqual("DuplicateConnectionError");
-    expect((e as circuit.exceptions.DuplicateConnectionError<boolean>).inputConnector).toEqual(notElement2.inputs[0]);
-    expect((e as circuit.exceptions.DuplicateConnectionError<boolean>).outputConnector).toEqual(notElement1.outputs[0]);
+    expect((e as circuit.exceptions.DuplicateConnectionError<boolean>).inputPort).toEqual(notElement2.inputs[0]);
+    expect((e as circuit.exceptions.DuplicateConnectionError<boolean>).outputPort).toEqual(notElement1.outputs[0]);
   }
 
   expect(() => connectionManager.connect(notElement3.outputs[0], notElement2.inputs[0])).toThrow(circuit.exceptions.InputAlreadyConnectedError<boolean>);
@@ -57,20 +57,20 @@ it('Base Connector Exceptions test', () => {
     expect(true).toEqual(false);
   } catch (e) {
     expect((e as circuit.exceptions.InputAlreadyConnectedError<boolean>).name).toEqual("InputAlreadyConnectedError");
-    expect((e as circuit.exceptions.InputAlreadyConnectedError<boolean>).inputConnector).toEqual(notElement2.inputs[0]);
+    expect((e as circuit.exceptions.InputAlreadyConnectedError<boolean>).inputPort).toEqual(notElement2.inputs[0]);
   }
 
-  expect(() => connectionManager.connect(notElement1.outputs[0], notElement2.outputs[0])).toThrow(circuit.exceptions.InvalidConnectorsPairError<boolean>);
-  expect(() => connectionManager.connect(notElement1.inputs[0], notElement2.inputs[0])).toThrow(circuit.exceptions.InvalidConnectorsPairError<boolean>);
-  expect(() => connectionManager.disconnect(notElement1.outputs[0], notElement2.outputs[0])).toThrow(circuit.exceptions.InvalidConnectorsPairError<boolean>);
-  expect(() => connectionManager.disconnect(notElement1.inputs[0], notElement2.inputs[0])).toThrow(circuit.exceptions.InvalidConnectorsPairError<boolean>);
+  expect(() => connectionManager.connect(notElement1.outputs[0], notElement2.outputs[0])).toThrow(circuit.exceptions.InvalidPortsPairError<boolean>);
+  expect(() => connectionManager.connect(notElement1.inputs[0], notElement2.inputs[0])).toThrow(circuit.exceptions.InvalidPortsPairError<boolean>);
+  expect(() => connectionManager.disconnect(notElement1.outputs[0], notElement2.outputs[0])).toThrow(circuit.exceptions.InvalidPortsPairError<boolean>);
+  expect(() => connectionManager.disconnect(notElement1.inputs[0], notElement2.inputs[0])).toThrow(circuit.exceptions.InvalidPortsPairError<boolean>);
   try {
     connectionManager.connect(notElement1.outputs[0], notElement2.outputs[0]);
     expect(true).toEqual(false);
   } catch (e) {
-    expect((e as circuit.exceptions.InvalidConnectorsPairError<boolean>).name).toEqual("InvalidConnectorsPairError");
-    expect((e as circuit.exceptions.InvalidConnectorsPairError<boolean>).lhsConnector).toEqual(notElement1.outputs[0]);
-    expect((e as circuit.exceptions.InvalidConnectorsPairError<boolean>).rhsConnector).toEqual(notElement2.outputs[0]);
+    expect((e as circuit.exceptions.InvalidPortsPairError<boolean>).name).toEqual("InvalidPortsPairError");
+    expect((e as circuit.exceptions.InvalidPortsPairError<boolean>).lhsPort).toEqual(notElement1.outputs[0]);
+    expect((e as circuit.exceptions.InvalidPortsPairError<boolean>).rhsPort).toEqual(notElement2.outputs[0]);
   }
 
   expect(() => connectionManager.disconnect(notElement2.outputs[0], notElement1.inputs[0])).toThrow(circuit.exceptions.ConnectionNotExistError<boolean>);
@@ -79,7 +79,7 @@ it('Base Connector Exceptions test', () => {
     expect(true).toEqual(false);
   } catch (e) {
     expect((e as circuit.exceptions.ConnectionNotExistError<boolean>).name).toEqual("ConnectionNotExistError");
-    expect((e as circuit.exceptions.ConnectionNotExistError<boolean>).inputConnector).toEqual(notElement1.inputs[0]);
-    expect((e as circuit.exceptions.ConnectionNotExistError<boolean>).outputConnector).toEqual(notElement2.outputs[0]);
+    expect((e as circuit.exceptions.ConnectionNotExistError<boolean>).inputPort).toEqual(notElement1.inputs[0]);
+    expect((e as circuit.exceptions.ConnectionNotExistError<boolean>).outputPort).toEqual(notElement2.outputs[0]);
   }
 });

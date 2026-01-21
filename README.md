@@ -32,10 +32,10 @@ manage signal propagation, and create reusable composite elements.
 
 ## Core Concepts
 
-### Connectors
-Connectors are the ports of an Element. 
-- **InputConnector**: Receives values from other elements.
-- **OutputConnector**: Sends values to connected inputs.
+### Ports
+Ports are the ports of an Element. 
+- **InputPort**: Receives values from other elements.
+- **OutputPort**: Sends values to connected inputs.
 
 ### Elements
 Elements are the building blocks of your circuit.
@@ -46,17 +46,17 @@ Elements are the building blocks of your circuit.
 ### Propagators
 Propagators manage how signals move through the circuit.
 - **SignalPropagator**: Handles the flow of signals across connections. It uses a queue-based approach to propagate values from outputs to inputs.
-- **ResetElementPropagator**: Used to initialize or reset the state of an entire circuit by marking all connectors as "dirty".
+- **ResetElementPropagator**: Used to initialize or reset the state of an entire circuit by marking all ports as "dirty".
 
 ### ConnectionManager
-Handles the wiring between output and input connectors, ensuring validity and preventing duplicate connections.
+Handles the wiring between output and input ports, ensuring validity and preventing duplicate connections.
 
 ### "Dirty" State
-A key concept in `circuit-ts` is the **dirty state**. A connector is considered "dirty" if:
+A key concept in `circuit-ts` is the **dirty state**. A port is considered "dirty" if:
 1. Its value has changed.
 2. It has been explicitly marked as dirty (e.g., during initialization or reset).
 
-The `SignalPropagator` only processes connectors that are dirty. When an element's input becomes dirty, the element recalculates its logic and, if its output value changes, that output also becomes dirty, continuing the propagation chain.
+The `SignalPropagator` only processes ports that are dirty. When an element's input becomes dirty, the element recalculates its logic and, if its output value changes, that output also becomes dirty, continuing the propagation chain.
 
 ---
 
@@ -181,7 +181,7 @@ class AdditionElement extends circuit.elements.BaseElement<number> {
     super(2, 1, 0); // 2 inputs, 1 output, default value 0
   }
 
-  public propagate(index?: number): circuit.ConnectorInterface<number>[] {
+  public propagate(index?: number): circuit.PortInterface<number>[] {
     // Logic: sum all inputs
     this.outputs[0].value = this.inputs.reduce((sum, input) => sum + input.value, 0);
     return super.propagate(index);
@@ -209,11 +209,11 @@ console.log(adder.outputs[0].value); // 35
 - `disconnect(output, input)`: Removes an existing link.
 
 ### `SignalPropagator<TValue>`
-- `propagate(targets)`: Propagates signals starting from the given connectors (usually inputs that have changed).
+- `propagate(targets)`: Propagates signals starting from the given ports (usually inputs that have changed).
 - `constructor(visitCounterLimit?: number)`: Default limit is 100 to prevent infinite loops.
 
 ### `ResetElementPropagator<TValue>`
-- `propagate(element)`: Recursively marks all connectors within the element (including internal ones for CompositeElements) as dirty.
+- `propagate(element)`: Recursively marks all ports within the element (including internal ones for CompositeElements) as dirty.
 
 ### `Element.propagate(index?: number)`
 - Calculates element logic and returns dirty outputs. For `CompositeElement`, it also triggers internal signal propagation.
@@ -239,7 +239,7 @@ The library provides specific error classes for common issues:
 - `InfiniteLoopError`: Thrown when a signal circles back too many times.
 - `DuplicateConnectionError`: Thrown when trying to connect the same ports twice.
 - `InputAlreadyConnectedError`: Thrown when an input port already has a source.
-- `InvalidConnectorsPairError`: Thrown when trying to connect two inputs or two outputs.
+- `InvalidPortsPairError`: Thrown when trying to connect two inputs or two outputs.
 
 ## Unit testing
 

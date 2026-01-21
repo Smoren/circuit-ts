@@ -1,5 +1,5 @@
 import {
-  ConnectorInterface,
+  PortInterface,
 } from "../types";
 import { BaseElement } from "../elements";
 
@@ -18,9 +18,9 @@ export class OrElement extends BaseElement<boolean> {
   /**
    * Recalculates the OR logic.
    * @param index - Index of the input that triggered the update.
-   * @returns Affected output connectors.
+   * @returns Affected output ports.
    */
-  public propagate(index?: number): Array<ConnectorInterface<boolean>> {
+  public propagate(index?: number): Array<PortInterface<boolean>> {
     this.outputs[0].value = this.inputs.some((input) => input.value);
     return super.propagate();
   }
@@ -41,9 +41,9 @@ export class AndElement extends BaseElement<boolean> {
   /**
    * Recalculates the AND logic.
    * @param index - Index of the input that triggered the update.
-   * @returns Affected output connectors.
+   * @returns Affected output ports.
    */
-  public propagate(index?: number): Array<ConnectorInterface<boolean>> {
+  public propagate(index?: number): Array<PortInterface<boolean>> {
     this.outputs[0].value = this.inputs.every((input) => input.value);
     return super.propagate(index);
   }
@@ -61,9 +61,9 @@ export class NotElement extends BaseElement<boolean> {
   /**
    * Recalculates the NOT logic.
    * @param index - Index of the input that triggered the update.
-   * @returns Affected output connectors.
+   * @returns Affected output ports.
    */
-  public propagate(index?: number): Array<ConnectorInterface<boolean>> {
+  public propagate(index?: number): Array<PortInterface<boolean>> {
     this.outputs[0].value = !this.inputs[0].value;
     return super.propagate(index);
   }

@@ -1,31 +1,31 @@
 import {
-  ConnectorInterface,
+  PortInterface,
   ElementInterface,
-  InputConnectorInterface,
-  OutputConnectorInterface,
+  InputPortInterface,
+  OutputPortInterface,
   ResetElementPropagatorInterface,
   SignalPropagatorInterface,
 } from "./types";
-import { InputConnector, OutputConnector } from "./connectors";
+import { InputPort, OutputPort } from "./ports";
 
 /**
  * Base abstract class for logic elements.
  * Provides a foundation for implementing specific logic components.
  */
 export abstract class BaseElement<TValue> implements ElementInterface<TValue> {
-  /** Collection of input connectors for this element. */
-  readonly inputs: Array<InputConnectorInterface<TValue>>;
-  /** Collection of output connectors for this element. */
-  readonly outputs: Array<OutputConnectorInterface<TValue>>;
+  /** Collection of input ports for this element. */
+  readonly inputs: Array<InputPortInterface<TValue>>;
+  /** Collection of output ports for this element. */
+  readonly outputs: Array<OutputPortInterface<TValue>>;
 
   /**
    * @param inputsCount - Number of input ports.
    * @param outputsCount - Number of output ports.
-   * @param defaultValue - Initial value for all connectors.
+   * @param defaultValue - Initial value for all ports.
    */
   protected constructor(inputsCount: number, outputsCount: number, defaultValue: TValue) {
-    this.inputs = InputConnector.createCollection<TValue>(this, inputsCount, defaultValue);
-    this.outputs = OutputConnector.createCollection<TValue>(this, outputsCount, defaultValue);
+    this.inputs = InputPort.createCollection<TValue>(this, inputsCount, defaultValue);
+    this.outputs = OutputPort.createCollection<TValue>(this, outputsCount, defaultValue);
   }
 
   /**
@@ -38,10 +38,10 @@ export abstract class BaseElement<TValue> implements ElementInterface<TValue> {
   /**
    * Recalculates the element state and propagates changes to outputs.
    * Default implementation just returns dirty outputs.
-   * @param index - Index of the input connector that triggered the update.
-   * @returns List of connectors that were affected.
+   * @param index - Index of the input port that triggered the update.
+   * @returns List of ports that were affected.
    */
-  public propagate(index?: number): Array<ConnectorInterface<TValue>> {
+  public propagate(index?: number): Array<PortInterface<TValue>> {
     return this.outputs.filter((output) => output.dirty);
   }
 }
@@ -61,9 +61,9 @@ export class BusElement<TValue> extends BaseElement<TValue> {
   /**
    * Propagates signal from inputs to outputs.
    * @param index - Optional index of the single channel to propagate. If undefined, all channels are updated.
-   * @returns Affected output connectors.
+   * @returns Affected output ports.
    */
-  public propagate(index?: number): Array<ConnectorInterface<TValue>> {
+  public propagate(index?: number): Array<PortInterface<TValue>> {
     if (index === undefined) {
       this._sendAll();
       return super.propagate(index);
@@ -83,13 +83,13 @@ export class BusElement<TValue> extends BaseElement<TValue> {
 
 /**
  * An element that encapsulates a complex internal circuit.
- * It uses an internal input bus and output bus to map its external connectors to the internal ones.
+ * It uses an internal input bus and output bus to map its external ports to the internal ones.
  */
 export class CompositeElement<TValue> implements ElementInterface<TValue> {
-  /** External input connectors. */
-  readonly inputs: Array<InputConnectorInterface<TValue>>;
-  /** External output connectors. */
-  readonly outputs: Array<OutputConnectorInterface<TValue>>;
+  /** External input ports. */
+  readonly inputs: Array<InputPortInterface<TValue>>;
+  /** External output ports. */
+  readonly outputs: Array<OutputPortInterface<TValue>>;
   private readonly _signalPropagator: SignalPropagatorInterface<TValue>;
   private readonly _resetPropagator: ResetElementPropagatorInterface<TValue>;
   private _isInited: boolean = false;
@@ -122,9 +122,9 @@ export class CompositeElement<TValue> implements ElementInterface<TValue> {
   /**
    * Propagates signals through the internal circuit.
    * @param index - Index of the input that changed.
-   * @returns Dirty external output connectors.
+   * @returns Dirty external output ports.
    */
-  public propagate(index?: number): Array<ConnectorInterface<TValue>> {
+  public propagate(index?: number): Array<PortInterface<TValue>> {
     if (!this._isInited) {
       this.init();
       return this._getDirtyOutputs();
@@ -135,8 +135,8 @@ export class CompositeElement<TValue> implements ElementInterface<TValue> {
     return this._getDirtyOutputs();
   }
 
-  /** Returns all output connectors that have a dirty state. */
-  private _getDirtyOutputs(): Array<ConnectorInterface<TValue>> {
+  /** Returns all output ports that have a dirty state. */
+  private _getDirtyOutputs(): Array<PortInterface<TValue>> {
     return this.outputs.filter((output) => output.dirty);
   }
 }

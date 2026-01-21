@@ -1,71 +1,71 @@
 /**
- * Represents the type of a connector: 'input' or 'output'.
+ * Represents the type of a port: 'input' or 'output'.
  */
-export type ConnectorType = 'input' | 'output';
+export type PortType = 'input' | 'output';
 
 /**
- * Base interface for all connectors (ports) of an element.
- * Connectors are used to link elements and propagate values.
+ * Base interface for all ports (ports) of an element.
+ * Ports are used to link elements and propagate values.
  */
-export interface ConnectorInterface<TValue> {
-  /** Current value on the connector. */
+export interface PortInterface<TValue> {
+  /** Current value on the port. */
   value: TValue;
-  /** Type of the connector: 'input' or 'output'. */
-  readonly type: ConnectorType;
-  /** Indicates if the connector's value has changed and needs propagation. */
+  /** Type of the port: 'input' or 'output'. */
+  readonly type: PortType;
+  /** Indicates if the port's value has changed and needs propagation. */
   readonly dirty: boolean;
-  /** The element this connector belongs to. */
+  /** The element this port belongs to. */
   readonly element: ElementInterface<TValue>;
-  /** Index of the connector in the element's input or output collection. */
+  /** Index of the port in the element's input or output collection. */
   readonly index: number;
-  /** List of input connectors that receive signal from this connector. */
-  readonly targets: Array<InputConnectorInterface<TValue>>;
+  /** List of input ports that receive signal from this port. */
+  readonly targets: Array<InputPortInterface<TValue>>;
   /**
-   * Propagates the signal from this connector.
-   * @returns A list of downstream connectors that were affected by the propagation.
+   * Propagates the signal from this port.
+   * @returns A list of downstream ports that were affected by the propagation.
    */
-  propagate(): Array<ConnectorInterface<TValue>>;
-  /** Marks the connector as dirty, forcing its re-evaluation in the next propagation. */
+  propagate(): Array<PortInterface<TValue>>;
+  /** Marks the port as dirty, forcing its re-evaluation in the next propagation. */
   makeDirty(): void;
 }
 
 /**
- * Interface for input connectors.
+ * Interface for input ports.
  */
-export interface InputConnectorInterface<TValue> extends ConnectorInterface<TValue> {}
+export interface InputPortInterface<TValue> extends PortInterface<TValue> {}
 
 /**
- * Interface for output connectors.
+ * Interface for output ports.
  */
-export interface OutputConnectorInterface<TValue> extends ConnectorInterface<TValue> {
+export interface OutputPortInterface<TValue> extends PortInterface<TValue> {
   /**
-   * Connects an input connector to this output.
-   * @param connector - The input connector to add as a target.
+   * Connects an input port to this output.
+   * @param port - The input port to add as a target.
    */
-  addTarget(connector: InputConnectorInterface<TValue>): void;
+  addTarget(port: InputPortInterface<TValue>): void;
   /**
-   * Disconnects an input connector from this output.
-   * @param connector - The input connector to remove.
+   * Disconnects an input port from this output.
+   * @param port - The input port to remove.
    */
-  removeTarget(connector: InputConnectorInterface<TValue>): void;
+  removeTarget(port: InputPortInterface<TValue>): void;
 }
 
 /**
  * Represents a logic element or a circuit component.
  */
 export interface ElementInterface<TValue> {
-  /** Collection of input connectors. */
-  readonly inputs: Array<InputConnectorInterface<TValue>>;
-  /** Collection of output connectors. */
-  readonly outputs: Array<OutputConnectorInterface<TValue>>;
+  /** Collection of input ports. */
+  readonly inputs: Array<InputPortInterface<TValue>>;
+  /** Collection of output ports. */
+  readonly outputs: Array<OutputPortInterface<TValue>>;
   /** Initializes the element's internal state and performs initial propagation. */
   init(): void;
   /**
    * Recalculates the element's logic and propagates changes to outputs.
-   * @param index - Optional index of the input connector that triggered the propagation.
-   * @returns A list of affected connectors.
+   * @param index - Optional index of the input port that triggered the propagation.
+   * @returns A list of affected ports.
    */
-  propagate(index?: number): Array<ConnectorInterface<TValue>>;
+  propagate(index?: number): Array<PortInterface<TValue>>;
 }
 
 /**
@@ -73,11 +73,11 @@ export interface ElementInterface<TValue> {
  */
 export interface SignalPropagatorInterface<TValue> {
   /**
-   * Propagates signals starting from the given target connectors.
-   * @param targets - Connectors to start propagation from.
-   * @returns A set of all connectors that were involved in the propagation.
+   * Propagates signals starting from the given target ports.
+   * @param targets - Ports to start propagation from.
+   * @returns A set of all ports that were involved in the propagation.
    */
-  propagate(targets: ConnectorInterface<TValue>[]): Set<ConnectorInterface<TValue>>;
+  propagate(targets: PortInterface<TValue>[]): Set<PortInterface<TValue>>;
 }
 
 /**
@@ -85,30 +85,30 @@ export interface SignalPropagatorInterface<TValue> {
  */
 export interface ResetElementPropagatorInterface<TValue> {
   /**
-   * Recursively marks connectors downstream from the element as dirty.
+   * Recursively marks ports downstream from the element as dirty.
    * @param element - The element to start resetting from.
    */
   propagate(element: ElementInterface<TValue>): void;
 }
 
 /**
- * Interface for managing connections between connectors.
+ * Interface for managing connections between ports.
  */
 export interface ConnectionManagerInterface<TValue> {
   /**
-   * Creates a connection between two connectors.
+   * Creates a connection between two ports.
    * One must be an output and the other an input.
-   * @param lhs - First connector.
-   * @param rhs - Second connector.
-   * @throws {DuplicateConnectionError} If a connection already exists between the given connectors.
-   * @throws {InvalidConnectorsPairError} If the connectors are of incompatible types.
+   * @param lhs - First port.
+   * @param rhs - Second port.
+   * @throws {DuplicateConnectionError} If a connection already exists between the given ports.
+   * @throws {InvalidPortsPairError} If the ports are of incompatible types.
    */
-  connect(lhs: ConnectorInterface<TValue>, rhs: ConnectorInterface<TValue>): void;
+  connect(lhs: PortInterface<TValue>, rhs: PortInterface<TValue>): void;
   /**
-   * Removes a connection between two connectors.
-   * @param lhs - First connector.
-   * @param rhs - Second connector.
-   * @throws {ConnectionNotExistError} If there is no connection between the given connectors.
+   * Removes a connection between two ports.
+   * @param lhs - First port.
+   * @param rhs - Second port.
+   * @throws {ConnectionNotExistError} If there is no connection between the given ports.
    */
-  disconnect(lhs: ConnectorInterface<TValue>, rhs: ConnectorInterface<TValue>): void;
+  disconnect(lhs: PortInterface<TValue>, rhs: PortInterface<TValue>): void;
 }

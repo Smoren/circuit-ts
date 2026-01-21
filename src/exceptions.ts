@@ -1,20 +1,20 @@
-import type { ConnectorInterface, InputConnectorInterface, OutputConnectorInterface } from "./types";
+import type { PortInterface, InputPortInterface, OutputPortInterface } from "./types";
 
 /**
  * Base class for errors occurring during signal propagation.
  */
 export class SignalPropagationError<TValue> extends Error {
-  protected readonly _connector: ConnectorInterface<TValue>;
+  protected readonly _port: PortInterface<TValue>;
 
-  constructor(connector: ConnectorInterface<TValue>, message: string) {
+  constructor(port: PortInterface<TValue>, message: string) {
     super(message);
     this.name = "SignalPropagationError";
-    this._connector = connector;
+    this._port = port;
   }
 
-  /** The connector where the error was detected. */
-  get connector(): ConnectorInterface<TValue> {
-    return this._connector;
+  /** The port where the error was detected. */
+  get port(): PortInterface<TValue> {
+    return this._port;
   }
 }
 
@@ -22,14 +22,14 @@ export class SignalPropagationError<TValue> extends Error {
  * Thrown when an infinite loop is detected during signal propagation.
  */
 export class InfiniteLoopError<TValue> extends SignalPropagationError<TValue> {
-  constructor(connector: ConnectorInterface<TValue>) {
-    super(connector, 'Infinite loop detected');
+  constructor(port: PortInterface<TValue>) {
+    super(port, 'Infinite loop detected');
     this.name = "InfiniteLoopError";
   }
 }
 
 /**
- * Base class for errors related to connector connections.
+ * Base class for errors related to port connections.
  */
 export class ConnectionError extends Error {
   constructor(message: string) {
@@ -42,67 +42,67 @@ export class ConnectionError extends Error {
  * Thrown when trying to create a connection that already exists.
  */
 export class DuplicateConnectionError<TValue> extends ConnectionError {
-  private readonly _inputConnector: InputConnectorInterface<TValue>;
-  private readonly _outputConnector: OutputConnectorInterface<TValue>;
+  private readonly _inputPort: InputPortInterface<TValue>;
+  private readonly _outputPort: OutputPortInterface<TValue>;
 
-  constructor(inputConnector: InputConnectorInterface<TValue>, outputConnector: OutputConnectorInterface<TValue>) {
+  constructor(inputPort: InputPortInterface<TValue>, outputPort: OutputPortInterface<TValue>) {
     super('Duplicate connection detected');
     this.name = "DuplicateConnectionError";
-    this._inputConnector = inputConnector;
-    this._outputConnector = outputConnector;
+    this._inputPort = inputPort;
+    this._outputPort = outputPort;
   }
 
-  /** The input connector involved in the duplicate connection. */
-  public get inputConnector(): InputConnectorInterface<TValue> {
-    return this._inputConnector;
+  /** The input port involved in the duplicate connection. */
+  public get inputPort(): InputPortInterface<TValue> {
+    return this._inputPort;
   }
 
-  /** The output connector involved in the duplicate connection. */
-  public get outputConnector(): OutputConnectorInterface<TValue> {
-    return this._outputConnector;
+  /** The output port involved in the duplicate connection. */
+  public get outputPort(): OutputPortInterface<TValue> {
+    return this._outputPort;
   }
 }
 
 /**
- * Thrown when trying to connect an already connected input connector to another output.
+ * Thrown when trying to connect an already connected input port to another output.
  */
 export class InputAlreadyConnectedError<TValue> extends ConnectionError {
-  private readonly _inputConnector: InputConnectorInterface<TValue>;
+  private readonly _inputPort: InputPortInterface<TValue>;
 
-  constructor(inputConnector: InputConnectorInterface<TValue>) {
-    super('Input connector is already has connection');
+  constructor(inputPort: InputPortInterface<TValue>) {
+    super('Input port is already has connection');
     this.name = "InputAlreadyConnectedError";
-    this._inputConnector = inputConnector;
+    this._inputPort = inputPort;
   }
 
-  /** The input connector that is already occupied. */
-  public get inputConnector(): InputConnectorInterface<TValue> {
-    return this._inputConnector;
+  /** The input port that is already occupied. */
+  public get inputPort(): InputPortInterface<TValue> {
+    return this._inputPort;
   }
 }
 
 /**
- * Thrown when trying to connect two connectors of incompatible types (e.g., two inputs or two outputs).
+ * Thrown when trying to connect two ports of incompatible types (e.g., two inputs or two outputs).
  */
-export class InvalidConnectorsPairError<TValue> extends ConnectionError {
-  private readonly _lhsConnector: ConnectorInterface<TValue>;
-  private readonly _rhsConnector: ConnectorInterface<TValue>;
+export class InvalidPortsPairError<TValue> extends ConnectionError {
+  private readonly _lhsPort: PortInterface<TValue>;
+  private readonly _rhsPort: PortInterface<TValue>;
 
-  constructor(lhsConnector: ConnectorInterface<TValue>, rhsConnector: ConnectorInterface<TValue>) {
-    super('Invalid connectors pair');
-    this.name = "InvalidConnectorsPairError";
-    this._lhsConnector = lhsConnector;
-    this._rhsConnector = rhsConnector;
+  constructor(lhsPort: PortInterface<TValue>, rhsPort: PortInterface<TValue>) {
+    super('Invalid ports pair');
+    this.name = "InvalidPortsPairError";
+    this._lhsPort = lhsPort;
+    this._rhsPort = rhsPort;
   }
 
-  /** The first connector in the invalid pair. */
-  public get lhsConnector(): ConnectorInterface<TValue> {
-    return this._lhsConnector;
+  /** The first port in the invalid pair. */
+  public get lhsPort(): PortInterface<TValue> {
+    return this._lhsPort;
   }
 
-  /** The second connector in the invalid pair. */
-  public get rhsConnector(): ConnectorInterface<TValue> {
-    return this._rhsConnector;
+  /** The second port in the invalid pair. */
+  public get rhsPort(): PortInterface<TValue> {
+    return this._rhsPort;
   }
 }
 
@@ -110,23 +110,23 @@ export class InvalidConnectorsPairError<TValue> extends ConnectionError {
  * Thrown when trying to disconnect a connection that does not exist.
  */
 export class ConnectionNotExistError<TValue> extends ConnectionError {
-  private readonly _inputConnector: InputConnectorInterface<TValue>;
-  private readonly _outputConnector: OutputConnectorInterface<TValue>;
+  private readonly _inputPort: InputPortInterface<TValue>;
+  private readonly _outputPort: OutputPortInterface<TValue>;
 
-  constructor(inputConnector: InputConnectorInterface<TValue>, outputConnector: OutputConnectorInterface<TValue>) {
+  constructor(inputPort: InputPortInterface<TValue>, outputPort: OutputPortInterface<TValue>) {
     super('Connection does not exist');
     this.name = "ConnectionNotExistError";
-    this._inputConnector = inputConnector;
-    this._outputConnector = outputConnector;
+    this._inputPort = inputPort;
+    this._outputPort = outputPort;
   }
 
-  /** The input connector of the non-existent connection. */
-  public get inputConnector(): InputConnectorInterface<TValue> {
-    return this._inputConnector;
+  /** The input port of the non-existent connection. */
+  public get inputPort(): InputPortInterface<TValue> {
+    return this._inputPort;
   }
 
-  /** The output connector of the non-existent connection. */
-  public get outputConnector(): OutputConnectorInterface<TValue> {
-    return this._outputConnector;
+  /** The output port of the non-existent connection. */
+  public get outputPort(): OutputPortInterface<TValue> {
+    return this._outputPort;
   }
 }

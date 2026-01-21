@@ -1,6 +1,6 @@
 {
   "name": "circuit-ts",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Library for simulating digital circuits and logic gates, providing a fluent interface for circuit design and analysis.",
   "license": "MIT",
   "repository": {
