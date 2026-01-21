@@ -58,6 +58,8 @@ export interface ElementInterface<TValue> {
   readonly inputs: Array<InputPortInterface<TValue>>;
   /** Collection of output ports. */
   readonly outputs: Array<OutputPortInterface<TValue>>;
+  /** Indicates whether the element is a composite element, containing other elements. */
+  readonly composite: boolean;
   /** Initializes the element's internal state and performs initial propagation. */
   init(): void;
   /**

@@ -16,6 +16,8 @@ describe.each([
 
       rsTrigger.init();
 
+      expect(rsTrigger.composite).toEqual(true);
+
       const [directOutput, inverseOutput] = rsTrigger.outputs;
       expect(directOutput.value).not.toEqual(inverseOutput.value);
 

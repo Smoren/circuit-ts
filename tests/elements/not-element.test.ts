@@ -10,6 +10,7 @@ describe.each([
       const notElement = circuit.boolean.factories.createNotElement();
       const notElementOutput = notElement.outputs[0];
 
+      expect(notElement.composite).toEqual(false);
       expect(notElementOutput.value).toEqual(false);
 
       for (const [inputValue, expectedOutputValue] of operations) {

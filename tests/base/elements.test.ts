@@ -19,6 +19,10 @@ it('Base Boolean Elements test', () => {
   connectionManager.connect(notElement.outputs[0], outputBus.inputs[0]);
   signalPropagator.propagate(outputBus.inputs);
 
+  expect(inputBus.composite).toEqual(false);
+  expect(notElement.composite).toEqual(false);
+  expect(outputBus.composite).toEqual(false);
+
   expect(inputBus.outputs[0].value).toEqual(false);
   expect(notElement.outputs[0].value).toEqual(true);
   expect(outputBus.outputs[0].value).toEqual(true);
@@ -41,6 +45,7 @@ it('Base Boolean Elements test', () => {
 
   {
     const compositeElement = compositeFactory.createComposite(inputBus, outputBus);
+    expect(compositeElement.composite).toEqual(true);
 
     expect(compositeElement.inputs[0].value).toEqual(false);
     expect(compositeElement.outputs[0].value).toEqual(true);

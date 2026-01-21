@@ -10,6 +10,7 @@ describe.each([
       const orElement = circuit.boolean.factories.createOrElement(inputValues.length);
       const orElementOutput = orElement.outputs[0];
 
+      expect(orElement.composite).toEqual(false);
       expect(orElementOutput.value).toEqual(false);
 
       for (let i=0; i<inputValues.length; ++i) {
@@ -32,6 +33,7 @@ describe.each([
       const orElement = circuit.boolean.factories.createOrElement(inputsCount);
       const orElementOutput = orElement.outputs[0];
 
+      expect(orElement.composite).toEqual(false);
       expect(orElementOutput.value).toEqual(false);
 
       for (const [inputIndex, inputValue, expectedOutputValue] of operations) {

@@ -10,6 +10,7 @@ describe.each([
       const andElement = circuit.boolean.factories.createAndElement(inputValues.length);
       const andElementOutput = andElement.outputs[0];
 
+      expect(andElement.composite).toEqual(false);
       expect(andElementOutput.value).toEqual(false);
 
       for (let i=0; i<inputValues.length; ++i) {
@@ -32,6 +33,7 @@ describe.each([
       const andElement = circuit.boolean.factories.createAndElement(inputsCount);
       const andElementOutput = andElement.outputs[0];
 
+      expect(andElement.composite).toEqual(false);
       expect(andElementOutput.value).toEqual(false);
 
       for (const [inputIndex, inputValue, expectedOutputValue] of operations) {

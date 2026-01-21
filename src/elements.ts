@@ -29,6 +29,11 @@ export abstract class BaseElement<TValue> implements ElementInterface<TValue> {
   }
 
   /**
+   * Indicates whether the element is a composite element, containing other elements.
+   */
+  public abstract get composite(): boolean;
+
+  /**
    * Performs initial initialization and propagation.
    */
   public init(): void {
@@ -46,10 +51,16 @@ export abstract class BaseElement<TValue> implements ElementInterface<TValue> {
   }
 }
 
+export abstract class UniformElement<TValue> extends BaseElement<TValue> {
+  public get composite(): boolean {
+    return false;
+  }
+}
+
 /**
  * An element that acts as a bus, passing signals from inputs to corresponding outputs without modification.
  */
-export class BusElement<TValue> extends BaseElement<TValue> {
+export class BusElement<TValue> extends UniformElement<TValue> {
   /**
    * @param channelsCount - Number of parallel signal channels.
    * @param defaultValue - Initial value for all channels.
@@ -133,6 +144,13 @@ export class CompositeElement<TValue> implements ElementInterface<TValue> {
     const inputs = index === undefined ? this.inputs : [this.inputs[index]];
     this._signalPropagator.propagate(inputs);
     return this._getDirtyOutputs();
+  }
+
+  /**
+   * Indicates whether the element is a composite element, containing other elements.
+   */
+  public get composite(): boolean {
+    return true;
   }
 
   /** Returns all output ports that have a dirty state. */

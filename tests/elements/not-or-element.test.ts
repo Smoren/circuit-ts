@@ -17,6 +17,7 @@ describe.each([
 
       notOrElement.init();
 
+      expect(notOrElement.composite).toEqual(true);
       expect(notOrElementOutput.value).toEqual(true);
 
       for (let i=0; i<inputValues.length; ++i) {
@@ -48,6 +49,7 @@ describe.each([
 
       notOrElement.init();
 
+      expect(notOrElement.composite).toEqual(true);
       expect(notOrElementOutput.value).toEqual(true);
 
       for (const [inputIndex, inputValue, expectedOutputValue] of operations) {
