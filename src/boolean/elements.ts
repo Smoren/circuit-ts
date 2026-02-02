@@ -1,13 +1,13 @@
 import {
   PortInterface,
 } from "../types";
-import { UniformElement } from "../elements";
+import { AtomicElement } from "../elements";
 
 /**
  * Represents a logical OR gate.
  * The output is true if at least one input is true.
  */
-export class OrElement extends UniformElement<boolean> {
+export class OrElement extends AtomicElement<boolean> {
   /**
    * @param inputsCount - Number of input ports for the OR gate.
    */
@@ -30,7 +30,7 @@ export class OrElement extends UniformElement<boolean> {
  * Represents a logical AND gate.
  * The output is true if all inputs are true.
  */
-export class AndElement extends UniformElement<boolean> {
+export class AndElement extends AtomicElement<boolean> {
   /**
    * @param inputsCount - Number of input ports for the AND gate.
    */
@@ -53,7 +53,7 @@ export class AndElement extends UniformElement<boolean> {
  * Represents a logical NOT gate (inverter).
  * The output is the inverse of the input.
  */
-export class NotElement extends UniformElement<boolean> {
+export class NotElement extends AtomicElement<boolean> {
   constructor() {
     super(1, 1, false);
   }

@@ -1,6 +1,6 @@
 import type {
   PortInterface,
-  PortType,
+  PortDirection,
   ElementInterface,
   InputPortInterface,
   OutputPortInterface,
@@ -34,8 +34,8 @@ export abstract class BasePort<TValue> implements PortInterface<TValue> {
    */
   public abstract propagate(): Array<PortInterface<TValue>>;
 
-  /** Returns the port type ('input' or 'output'). */
-  abstract get type(): PortType;
+  /** Returns the port direction ('input' or 'output'). */
+  abstract get direction(): PortDirection;
 
   /** Returns the list of targets connected to this port. */
   abstract get targets(): Array<InputPortInterface<TValue>>;
@@ -76,7 +76,7 @@ export abstract class BasePort<TValue> implements PortInterface<TValue> {
  * Concrete implementation of an input port.
  */
 export class InputPort<TValue> extends BasePort<TValue> implements InputPortInterface<TValue> {
-  readonly type: PortType = 'input';
+  readonly direction: PortDirection = 'input';
 
   /**
    * Constructor for creating an input port.
@@ -120,7 +120,7 @@ export class InputPort<TValue> extends BasePort<TValue> implements InputPortInte
  * Concrete implementation of an output port.
  */
 export class OutputPort<TValue> extends BasePort<TValue> implements OutputPortInterface<TValue> {
-  readonly type: PortType = 'output';
+  readonly direction: PortDirection = 'output';
   private readonly _targets: Set<InputPortInterface<TValue>>;
 
   /**

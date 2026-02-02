@@ -51,7 +51,7 @@ export abstract class BaseElement<TValue> implements ElementInterface<TValue> {
   }
 }
 
-export abstract class UniformElement<TValue> extends BaseElement<TValue> {
+export abstract class AtomicElement<TValue> extends BaseElement<TValue> {
   public get composite(): boolean {
     return false;
   }
@@ -60,7 +60,7 @@ export abstract class UniformElement<TValue> extends BaseElement<TValue> {
 /**
  * An element that acts as a bus, passing signals from inputs to corresponding outputs without modification.
  */
-export class BusElement<TValue> extends UniformElement<TValue> {
+export class BusElement<TValue> extends AtomicElement<TValue> {
   /**
    * @param channelsCount - Number of parallel signal channels.
    * @param defaultValue - Initial value for all channels.

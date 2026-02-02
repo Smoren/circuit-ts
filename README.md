@@ -40,7 +40,7 @@ Ports are the ports of an Element.
 ### Elements
 Elements are the building blocks of your circuit.
 - **BaseElement**: The foundation for all logic gates.
-- **UniformElement**: The foundation for all non-composite logic gates.
+- **AtomicElement**: The foundation for all non-composite logic gates.
 - **BusElement**: A special element that passes signals through without logic changes, useful for routing.
 - **CompositeElement**: Encapsulates a group of connected elements into a single unit with its own inputs and outputs.
 
@@ -177,7 +177,7 @@ The library is fully generic and can work with types other than `boolean`. Here 
 import * as circuit from 'circuit-ts';
 
 // 1. Define a custom element for addition
-class AdditionElement extends circuit.elements.UniformElement<number> {
+class AdditionElement extends circuit.elements.AtomicElement<number> {
   constructor() {
     super(2, 1, 0); // 2 inputs, 1 output, default value 0
   }

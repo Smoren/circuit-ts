@@ -1,28 +1,12 @@
 /**
- * Represents the type of a port: 'input' or 'output'.
+ * Represents the type of port: 'input' or 'output'.
  */
-export type PortType = 'input' | 'output';
+export type PortDirection = 'input' | 'output';
 
-export type IdType = string | number;
-
-export type ConnectionData = {
-  lhsId: IdType;
-  rhsId: IdType;
-}
-
-export type PortData = {
-  id: IdType;
-  elementId: IdType;
-  index: number;
-  name?: string;
-  inverted: boolean;
-}
-
-export type ElementData = {
-  id: IdType;
-  name: string;
-  symbol: string;
-}
+/**
+ * Represents the granularity level of an element.
+ */
+export type ElementGranularity = 'atomic' | 'composite';
 
 /**
  * Base interface for all ports (ports) of an element.
@@ -31,8 +15,8 @@ export type ElementData = {
 export interface PortInterface<TValue> {
   /** Current value on the port. */
   value: TValue;
-  /** Type of the port: 'input' or 'output'. */
-  readonly type: PortType;
+  /** Direction of the port: 'input' or 'output'. */
+  readonly direction: PortDirection;
   /** Indicates if the port's value has changed and needs propagation. */
   readonly dirty: boolean;
   /** The element this port belongs to. */
@@ -134,4 +118,53 @@ export interface ConnectionManagerInterface<TValue> {
    * @throws {ConnectionNotExistError} If there is no connection between the given ports.
    */
   disconnect(lhs: PortInterface<TValue>, rhs: PortInterface<TValue>): void;
+}
+
+export type ElementDescriptor<TId, TOperation> = {
+  id: TId;
+  granularity: ElementGranularity;
+} & (
+  {
+    granularity: 'atomic';
+    operation: TOperation;
+    inputsCount: number;
+    outputsCount: number;
+  } | {
+    granularity: 'composite';
+    inputBus: ElementDescriptor<TId, 'bus'>;
+    outputBus: ElementDescriptor<TId, 'bus'>;
+    nestedElements: ElementDescriptor<TId, TOperation>[];
+    nestedConnections: ConnectionDescriptor<TId>[];
+  }
+);
+
+export type PortDescriptor<TIdType> = {
+  elementId: TIdType;
+  direction: PortDirection;
+  index: number;
+}
+
+export type ConnectionDescriptor<TIdType> = {
+  id: TIdType;
+  lhs: PortDescriptor<TIdType>;
+  rhs: PortDescriptor<TIdType>;
+}
+
+export interface CircuitRepositoryInterface<TId, TOperation, TValue> {
+  addElement(descriptor: ElementDescriptor<TId, TOperation>): ElementInterface<TValue>;
+  addConnection(identifier: ConnectionDescriptor<TId>): [PortInterface<TValue>, PortInterface<TValue>];
+
+  removeElement(elementId: TId): ElementDescriptor<TId, TOperation>;
+  removeConnection(connectionId: TId): ConnectionDescriptor<TId>;
+
+  hasElement(elementId: TId): boolean;
+  hasConnection(connectionId: TId): boolean;
+
+  getElement(elementId: TId): ElementInterface<TValue>;
+  getElementDescriptor(elementId: TId): ElementDescriptor<TId, TOperation>;
+
+  getElementInputPortDescriptor(elementId: TId, index: number): PortDescriptor<TId>;
+  getElementOutputPortDescriptor(elementId: TId, index: number): PortDescriptor<TId>;
+
+  getConnectionDescriptor(connectionId: TId): ConnectionDescriptor<TId>;
 }

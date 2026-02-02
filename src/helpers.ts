@@ -78,10 +78,10 @@ export class ConnectionManager<TValue> implements ConnectionManagerInterface<TVa
    * @throws {InvalidPortsPairError} If the pair is invalid (e.g., both are inputs).
    */
   private getOrderedPair(lhs: PortInterface<TValue>, rhs: PortInterface<TValue>): [OutputPortInterface<TValue>, InputPortInterface<TValue>] {
-    if (lhs.type === 'output' && rhs.type === 'input') {
+    if (lhs.direction === 'output' && rhs.direction === 'input') {
       return [lhs as OutputPortInterface<TValue>, rhs as InputPortInterface<TValue>];
     }
-    if (lhs.type === 'input' && rhs.type === 'output') {
+    if (lhs.direction === 'input' && rhs.direction === 'output') {
       return [rhs as OutputPortInterface<TValue>, lhs as InputPortInterface<TValue>];
     }
     throw new InvalidPortsPairError<TValue>(lhs, rhs);

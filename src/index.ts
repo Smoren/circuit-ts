@@ -15,7 +15,7 @@ export {
 };
 
 export type {
-  PortType,
+  PortDirection,
   PortInterface,
   InputPortInterface,
   OutputPortInterface,
