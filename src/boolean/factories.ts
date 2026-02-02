@@ -83,7 +83,7 @@ export class CompositeElementFactory {
     return this.createComposite(inputBus, outputBus);
   }
 
-  // TODO add XOR
+  // TODO add XOR (A OR B) AND NOT(A AND B)
 
   /**
    * Creates a NOR-based RS Trigger.
