@@ -120,15 +120,28 @@ export interface ConnectionManagerInterface<TValue> {
   disconnect(lhs: PortInterface<TValue>, rhs: PortInterface<TValue>): void;
 }
 
-export type ElementDescriptor<TId, TOperation> = {
+export type BaseIdType = string | number;
+
+export type PortDescriptor<TId extends BaseIdType> = {
+  id: TId;
+  index: number;
+}
+
+export type ConnectionDescriptor<TId extends BaseIdType> = {
+  id: TId;
+  lhs: PortDescriptor<TId>;
+  rhs: PortDescriptor<TId>;
+}
+
+export type ElementDescriptor<TId extends BaseIdType, TOperation> = {
   id: TId;
   granularity: ElementGranularity;
 } & (
   {
     granularity: 'atomic';
     operation: TOperation;
-    inputsCount: number;
-    outputsCount: number;
+    inputPorts: PortDescriptor<TId>[];
+    outputPorts: PortDescriptor<TId>[];
   } | {
     granularity: 'composite';
     inputBus: ElementDescriptor<TId, 'bus'>;
@@ -138,17 +151,35 @@ export type ElementDescriptor<TId, TOperation> = {
   }
 );
 
-export type PortDescriptor<TIdType> = {
-  elementId: TIdType;
-  direction: PortDirection;
-  index: number;
-}
-
-export type ConnectionDescriptor<TIdType> = {
-  id: TIdType;
-  lhs: PortDescriptor<TIdType>;
-  rhs: PortDescriptor<TIdType>;
-}
+// export type ElementDescriptor<TId, TOperation> = {
+//   id: TId;
+//   granularity: ElementGranularity;
+// } & (
+//   {
+//     granularity: 'atomic';
+//     operation: TOperation;
+//     inputsCount: number;
+//     outputsCount: number;
+//   } | {
+//     granularity: 'composite';
+//     inputBus: ElementDescriptor<TId, 'bus'>;
+//     outputBus: ElementDescriptor<TId, 'bus'>;
+//     nestedElements: ElementDescriptor<TId, TOperation>[];
+//     nestedConnections: ConnectionDescriptor<TId>[];
+//   }
+// );
+//
+// export type PortDescriptor<TId> = {
+//   elementId: TId;
+//   direction: PortDirection;
+//   index: number;
+// }
+//
+// export type ConnectionDescriptor<TId> = {
+//   id: TId;
+//   lhs: PortDescriptor<TId>;
+//   rhs: PortDescriptor<TId>;
+// }
 
 export interface CircuitRepositoryInterface<TId, TOperation, TValue> {
   addElement(descriptor: ElementDescriptor<TId, TOperation>): ElementInterface<TValue>;
