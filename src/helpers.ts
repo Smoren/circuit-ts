@@ -3,6 +3,7 @@ import {
   PortInterface,
   InputPortInterface,
   OutputPortInterface,
+  IdFactoryInterface,
 } from "./types";
 import {
   ConnectionNotExistError,
@@ -85,5 +86,13 @@ export class ConnectionManager<TValue> implements ConnectionManagerInterface<TVa
       return [rhs as OutputPortInterface<TValue>, lhs as InputPortInterface<TValue>];
     }
     throw new InvalidPortsPairError<TValue>(lhs, rhs);
+  }
+}
+
+export class IntAutoIncrementIdFactory implements IdFactoryInterface<number> {
+  private _lastId: number = 0;
+
+  public create(): number {
+    return this._lastId++;
   }
 }

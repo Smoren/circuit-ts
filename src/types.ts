@@ -123,65 +123,66 @@ export interface ConnectionManagerInterface<TValue> {
 export type BaseIdType = string | number;
 
 export type PortDescriptor<TId extends BaseIdType> = {
-  id: TId;
-  index: number;
+  readonly id: TId;
+  readonly index: number;
 }
 
 export type ConnectionDescriptor<TId extends BaseIdType> = {
-  id: TId;
-  lhs: PortDescriptor<TId>;
-  rhs: PortDescriptor<TId>;
+  readonly id: TId;
+  readonly lhs: PortDescriptor<TId>;
+  readonly rhs: PortDescriptor<TId>;
 }
 
 export type ElementDescriptor<TId extends BaseIdType, TOperation> = {
-  id: TId;
-  granularity: ElementGranularity;
+  readonly id: TId;
+  readonly granularity: ElementGranularity;
 } & (
   {
-    granularity: 'atomic';
-    operation: TOperation;
-    inputPorts: PortDescriptor<TId>[];
-    outputPorts: PortDescriptor<TId>[];
+    readonly granularity: 'atomic';
+    readonly operation: TOperation;
+    readonly inputPorts: PortDescriptor<TId>[];
+    readonly outputPorts: PortDescriptor<TId>[];
   } | {
-    granularity: 'composite';
-    inputBus: ElementDescriptor<TId, 'bus'>;
-    outputBus: ElementDescriptor<TId, 'bus'>;
-    nestedElements: ElementDescriptor<TId, TOperation>[];
-    nestedConnections: ConnectionDescriptor<TId>[];
+    readonly granularity: 'composite';
+    readonly inputBus: ElementDescriptor<TId, 'bus'>;
+    readonly outputBus: ElementDescriptor<TId, 'bus'>;
+    readonly nestedElements: ElementDescriptor<TId, TOperation>[];
+    readonly nestedConnections: ConnectionDescriptor<TId>[];
   }
 );
 
-// export type ElementDescriptor<TId, TOperation> = {
-//   id: TId;
-//   granularity: ElementGranularity;
-// } & (
-//   {
-//     granularity: 'atomic';
-//     operation: TOperation;
-//     inputsCount: number;
-//     outputsCount: number;
-//   } | {
-//     granularity: 'composite';
-//     inputBus: ElementDescriptor<TId, 'bus'>;
-//     outputBus: ElementDescriptor<TId, 'bus'>;
-//     nestedElements: ElementDescriptor<TId, TOperation>[];
-//     nestedConnections: ConnectionDescriptor<TId>[];
-//   }
-// );
-//
-// export type PortDescriptor<TId> = {
-//   elementId: TId;
-//   direction: PortDirection;
-//   index: number;
-// }
-//
-// export type ConnectionDescriptor<TId> = {
-//   id: TId;
-//   lhs: PortDescriptor<TId>;
-//   rhs: PortDescriptor<TId>;
-// }
+export type AtomicElementDescriptorConfig<TId extends BaseIdType, TOperation> = {
+  readonly operation: TOperation;
+  readonly inputBus: ElementDescriptor<TId, 'bus'>;
+  readonly outputBus: ElementDescriptor<TId, 'bus'>;
+}
 
-export interface CircuitRepositoryInterface<TId, TOperation, TValue> {
+export type CompositeElementDescriptorConfig = {
+  readonly inputsCount: number;
+  readonly outputCount: number;
+}
+
+export interface IdFactoryInterface<TId extends BaseIdType> {
+  create(): TId;
+}
+
+export interface DescriptorFactoryInterface<TId extends BaseIdType, TOperation> {
+  createAtomicElementDescriptor(config: AtomicElementDescriptorConfig<TId, TOperation>): ElementDescriptor<TId, TOperation>;
+  createPortDescriptorCollection(size: number): PortDescriptor<TId>[];
+  createConnectionDescriptor(lhs: PortDescriptor<TId>, rhs: PortDescriptor<TId>): ConnectionDescriptor<TId>;
+}
+
+export interface CompositeElementDescriptorBuilderInterface<TId extends BaseIdType, TOperation> {
+  addElement(element: ElementDescriptor<TId, TOperation>): CompositeElementDescriptorBuilderInterface<TId, TOperation>;
+  addElements(elements: ElementDescriptor<TId, TOperation>[]): CompositeElementDescriptorBuilderInterface<TId, TOperation>;
+
+  addConnection(connection: ConnectionDescriptor<TId>): CompositeElementDescriptorBuilderInterface<TId, TOperation>;
+  addConnections(connections: ConnectionDescriptor<TId>[]): CompositeElementDescriptorBuilderInterface<TId, TOperation>;
+
+  build(): ElementDescriptor<TId, TOperation>;
+}
+
+export interface CircuitRepositoryInterface<TId extends BaseIdType, TOperation, TValue> {
   addElement(descriptor: ElementDescriptor<TId, TOperation>): ElementInterface<TValue>;
   addConnection(identifier: ConnectionDescriptor<TId>): [PortInterface<TValue>, PortInterface<TValue>];
 
