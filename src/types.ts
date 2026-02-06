@@ -166,6 +166,12 @@ export interface IdFactoryInterface<TId extends BaseIdType> {
   create(): TId;
 }
 
+export interface DescriptorIdFactoryInterface<TId extends BaseIdType> {
+  createForElement(): TId;
+  createForPort(): TId;
+  createForConnection(): TId;
+}
+
 export interface DescriptorFactoryInterface<TId extends BaseIdType, TOperation> {
   createAtomicElementDescriptor(config: AtomicElementDescriptorConfig<TId, TOperation>): ElementDescriptor<TId, TOperation>;
   createPortDescriptorCollection(size: number): PortDescriptor<TId>[];
